@@ -352,9 +352,38 @@ mark{background:#f7e8a0;border-radius:2px;padding:0 1px}
 .lt-result-bar .bv{font-family:'DM Mono',monospace;font-size:22px;font-weight:500}
 .lt-result-bar .bl{font-size:11px;color:var(--ink3)}
 .score-pass{color:var(--teal)}.score-avg{color:var(--blue)}.score-fail{color:var(--red)}
+/* ── API KEY BANNER ── */
+.apikey-banner{background:#1a3a5a;border-bottom:1px solid rgba(255,255,255,.08);padding:.6rem 1.5rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.apikey-banner.ok{background:#0f3a28}
+.apikey-banner.ok .apk-dot{background:#34d399}
+.apk-dot{width:7px;height:7px;border-radius:50%;background:#f7c94a;flex-shrink:0;animation:pulse 1.5s infinite}
+.apk-msg{font-size:12px;color:rgba(250,248,244,.7);flex:1;min-width:0}
+.apk-msg strong{color:var(--acc2)}
+.apk-row{display:flex;gap:6px;align-items:center}
+.apk-input{padding:5px 10px;border:1px solid rgba(255,255,255,.15);border-radius:var(--r);background:rgba(255,255,255,.07);color:var(--paper);font-size:12px;font-family:'DM Mono',monospace;width:260px;outline:none}
+.apk-input::placeholder{color:rgba(250,248,244,.3)}
+.apk-input:focus{border-color:rgba(255,255,255,.35)}
+.apk-save{padding:5px 14px;background:var(--blue);color:white;border:none;border-radius:var(--r);font-size:12px;cursor:pointer;white-space:nowrap}
+.apk-save:hover{background:#1a4f8a}
+.apk-clear{padding:5px 10px;background:transparent;color:rgba(250,248,244,.4);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);font-size:11px;cursor:pointer}
+.apk-clear:hover{color:rgba(250,248,244,.7)}
+.apk-link{font-size:11px;color:rgba(250,248,244,.4);text-decoration:underline;cursor:pointer;white-space:nowrap}
+.apk-link:hover{color:rgba(250,248,244,.7)}
+@media(max-width:600px){.apikey-banner{padding:.6rem 1rem}.apk-input{width:180px}.apk-msg{font-size:11px}}
 </style>
 </head>
 <body>
+
+<!-- API KEY BANNER -->
+<div class="apikey-banner" id="apk-banner">
+  <div class="apk-dot" id="apk-dot"></div>
+  <div class="apk-msg" id="apk-msg"><strong>ฟีเจอร์ตรวจการเขียน (AI)</strong> ต้องใช้ Anthropic API Key — <span class="apk-link" onclick="window.open('https://console.anthropic.com/settings/keys','_blank')">สร้างฟรีที่ console.anthropic.com →</span></div>
+  <div class="apk-row">
+    <input class="apk-input" id="apk-input" type="password" placeholder="sk-ant-api03-..." oninput="apkLiveCheck()" />
+    <button class="apk-save" onclick="saveApiKey()">บันทึก</button>
+    <button class="apk-clear" id="apk-clear-btn" onclick="clearApiKey()" style="display:none">ลบ</button>
+  </div>
+</div>
 
 <nav>
   <div class="nav-logo"><span></span>ENG Journey</div>
@@ -1426,6 +1455,67 @@ function selectPrompt(id) {
   document.getElementById('writing-area').focus();
 }
 
+// ══════════════════ API KEY MANAGEMENT ══════════════════
+const APK_SK = 'eng_journey_apikey';
+
+function getApiKey() {
+  try { return localStorage.getItem(APK_SK) || ''; } catch(e) { return ''; }
+}
+
+function saveApiKey() {
+  const val = document.getElementById('apk-input').value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    showApkError('Key ต้องขึ้นต้นด้วย sk-ant-... กรุณาตรวจสอบอีกครั้ง');
+    return;
+  }
+  try { localStorage.setItem(APK_SK, val); } catch(e) {}
+  updateApkBanner();
+  showXPToast('✓ บันทึก API Key แล้ว');
+}
+
+function clearApiKey() {
+  try { localStorage.removeItem(APK_SK); } catch(e) {}
+  document.getElementById('apk-input').value = '';
+  updateApkBanner();
+}
+
+function apkLiveCheck() {
+  const val = document.getElementById('apk-input').value.trim();
+  const banner = document.getElementById('apk-banner');
+  banner.classList.remove('ok');
+}
+
+function showApkError(msg) {
+  const m = document.getElementById('apk-msg');
+  const prev = m.innerHTML;
+  m.innerHTML = `<strong style="color:#f7c94a">⚠ ${msg}</strong>`;
+  setTimeout(() => m.innerHTML = prev, 3000);
+}
+
+function updateApkBanner() {
+  const key = getApiKey();
+  const banner = document.getElementById('apk-banner');
+  const dot = document.getElementById('apk-dot');
+  const msg = document.getElementById('apk-msg');
+  const inp = document.getElementById('apk-input');
+  const clrBtn = document.getElementById('apk-clear-btn');
+  if (key) {
+    banner.classList.add('ok');
+    dot.style.animation = 'none';
+    const masked = key.slice(0,10) + '••••••••••••••••' + key.slice(-4);
+    msg.innerHTML = `<strong>✓ AI พร้อมใช้งาน</strong> — ${masked}`;
+    inp.value = '';
+    inp.placeholder = 'อัปเดต key ใหม่...';
+    clrBtn.style.display = 'inline-block';
+  } else {
+    banner.classList.remove('ok');
+    dot.style.animation = '';
+    msg.innerHTML = `<strong>ฟีเจอร์ตรวจการเขียน (AI)</strong> ต้องใช้ Anthropic API Key — <span class="apk-link" onclick="window.open('https://console.anthropic.com/settings/keys','_blank')">สร้างฟรีที่ console.anthropic.com →</span>`;
+    inp.placeholder = 'sk-ant-api03-...';
+    clrBtn.style.display = 'none';
+  }
+}
+
 function updateWordCount() {
   const text = document.getElementById('writing-area').value.trim();
   const words = text ? text.split(/\s+/).length : 0;
@@ -1439,6 +1529,15 @@ function clearWriting() {
 }
 
 async function checkWriting() {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    const fb = document.getElementById('ai-feedback');
+    fb.className = 'ai-feedback show error';
+    document.getElementById('ai-feedback-body').innerHTML =
+      `<div class="fb-text">⚠ ยังไม่ได้ตั้ง API Key — กรอก Anthropic API Key ในแถบด้านบนก่อนนะคะ<br><br>
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--blue)">สร้าง API Key ฟรีที่ console.anthropic.com →</a></div>`;
+    return;
+  }
   const text = document.getElementById('writing-area').value.trim();
   if (!text || text.split(/\s+/).length < 5) { alert('กรุณาเขียนอย่างน้อย 5 คำก่อน'); return; }
   const btn = document.getElementById('check-btn');
@@ -1466,7 +1565,12 @@ Keep corrections to max 3 most important ones. If the writing is good, correctio
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
@@ -1475,13 +1579,10 @@ Keep corrections to max 3 most important ones. If the writing is good, correctio
       })
     });
     const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
     const raw = data.content?.[0]?.text || '';
     let result;
-    try {
-      result = JSON.parse(raw.replace(/```json|```/g, '').trim());
-    } catch(e) {
-      result = null;
-    }
+    try { result = JSON.parse(raw.replace(/```json|```/g, '').trim()); } catch(e) { result = null; }
     if (result) {
       fb.className = 'ai-feedback show result';
       const corHtml = result.corrections?.length
@@ -1500,12 +1601,13 @@ Keep corrections to max 3 most important ones. If the writing is good, correctio
         ${result.suggestion ? `<div class="fb-label" style="margin-top:10px">คำแนะนำ</div><div class="fb-text" style="color:var(--blue)">${result.suggestion}</div>` : ''}
       `;
       addXP(10);
-    } else {
-      throw new Error('parse error');
-    }
+    } else { throw new Error('parse error'); }
   } catch(e) {
     fb.className = 'ai-feedback show error';
-    document.getElementById('ai-feedback-body').innerHTML = '<div class="fb-text">ไม่สามารถเชื่อมต่อ AI ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง</div>';
+    const errMsg = e.message?.includes('401') ? 'API Key ไม่ถูกต้อง — กรุณาตรวจสอบ key ในแถบด้านบน'
+                 : e.message?.includes('429') ? 'ใช้งานเกิน limit — รอสักครู่แล้วลองใหม่'
+                 : 'ไม่สามารถเชื่อมต่อ AI ได้ กรุณาลองใหม่อีกครั้ง';
+    document.getElementById('ai-feedback-body').innerHTML = `<div class="fb-text">⚠ ${errMsg}</div>`;
   }
   btn.disabled = false;
   btn.textContent = 'ตรวจการเขียน ✦';
@@ -2037,6 +2139,7 @@ function showLTResults() {
 
 // ─── INIT ───
 updateXPBar();
+updateApkBanner();
 renderVCats();
 renderVocab();
 
