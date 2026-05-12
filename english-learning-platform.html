@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENG Journey — แพลตฟอร์มเรียนภาษาอังกฤษส่วนตัว</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1a1814;--ink2:#4a4742;--ink3:#8a8784;--ink4:#b8b5b0;
+  --paper:#faf8f4;--paper2:#f2efe9;--paper3:#e8e4dc;--paper4:#d8d4cc;
+  --rule:rgba(26,24,20,0.07);--rule2:rgba(26,24,20,0.13);
+  --acc:#c8502a;--acc2:#e8b84b;--blue:#1a5fa8;--teal:#0f7a62;
+  --purple:#5a3fa0;--green:#2a7a52;--red:#b83030;
+  --r:6px;--rlg:12px;--rxl:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font-family:'DM Sans',sans-serif;cursor:pointer}
+input,textarea,select{font-family:'DM Sans',sans-serif}
+
+/* ── NAV ── */
+nav{background:var(--ink);height:60px;display:flex;align-items:center;padding:0 1.5rem;gap:0;position:sticky;top:0;z-index:200}
+.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--paper);letter-spacing:-.02em;margin-right:2rem;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.nav-logo span{width:8px;height:8px;background:var(--acc2);border-radius:50%;display:inline-block}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:6px 14px;border-radius:var(--r);font-size:13px;color:rgba(250,248,244,.55);background:transparent;border:none;cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:6px}
+.ntab:hover{color:var(--paper);background:rgba(255,255,255,.08)}
+.ntab.on{color:var(--paper);background:rgba(255,255,255,.14);font-weight:500}
+.ntab .badge{font-size:10px;background:var(--acc);color:white;padding:1px 6px;border-radius:999px;font-family:'DM Mono',monospace}
+.nav-xp{margin-left:auto;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.xp-bar-wrap{display:flex;align-items:center;gap:8px}
+.xp-label{font-size:11px;font-family:'DM Mono',monospace;color:rgba(250,248,244,.5)}
+.xp-bar{width:80px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden}
+.xp-fill{height:100%;background:var(--acc2);border-radius:2px;transition:width .4s}
+.xp-num{font-size:11px;font-family:'DM Mono',monospace;color:var(--acc2)}
+
+/* ── PAGES ── */
+.page{display:none;padding:1.5rem;max-width:900px;margin:0 auto}
+.page.on{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page-heading{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:.25rem}
+.page-sub{font-size:13px;color:var(--ink3);margin-bottom:1.5rem}
+
+/* ── CARDS ── */
+.card{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1.25rem}
+.card+.card{margin-top:12px}
+
+/* ── VOCAB PAGE ── */
+.vocab-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.vocab-toolbar input{flex:1;min-width:160px;padding:8px 12px;border:1px solid var(--paper3);border-radius:var(--r);font-size:13px;outline:none;background:white;color:var(--ink)}
+.vocab-toolbar input:focus{border-color:var(--ink2)}
+.tb-btn{padding:8px 14px;border:1px solid var(--paper3);border-radius:var(--r);background:white;font-size:12px;color:var(--ink2);transition:all .15s}
+.tb-btn:hover{background:var(--paper2);border-color:var(--ink2)}
+.tb-btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cat-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.cpill{padding:4px 12px;border-radius:999px;border:1px solid var(--paper3);font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);background:white;cursor:pointer;transition:all .15s}
+.cpill.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.vcard{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1rem 1.1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.vcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--vc-acc,var(--paper3));border-radius:3px 0 0 3px}
+.vcard:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,24,20,.08)}
+.vcard.open{border-color:var(--ink)}
+.vcard[data-cat=verb]{--vc-acc:#1a5fa8}.vcard[data-cat=noun]{--vc-acc:#2a7a52}.vcard[data-cat=adj]{--vc-acc:#c8502a}.vcard[data-cat=adv]{--vc-acc:#5a3fa0}.vcard[data-cat=phrase]{--vc-acc:#b8780a}.vcard[data-cat=idiom]{--vc-acc:#8a3a5a}
+.vc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
+.vc-word{font-family:'Playfair Display',serif;font-size:17px;font-weight:700}
+.vc-badges{display:flex;gap:5px;align-items:center;flex-shrink:0}
+.cbadge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;font-weight:500}
+.cb-verb{background:#dce9f8;color:#0f3a7a}.cb-noun{background:#d5ede1;color:#1a5a3a}.cb-adj{background:#f7e0d8;color:#8a2a10}.cb-adv{background:#e8ddf7;color:#4a1f8a}.cb-phrase{background:#f7ead5;color:#8a4a0a}.cb-idiom{background:#f2dde8;color:#7a1a4a}
+.star-btn{background:none;border:none;font-size:14px;color:var(--ink4);cursor:pointer;transition:color .15s;padding:0}
+.star-btn.on{color:var(--acc2)}
+.vc-read{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:6px}
+.vc-def{font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:3px}
+.vc-thai{font-size:13px;font-weight:500}
+.vc-exp{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--rule2)}
+.vc-exp.open{display:block;animation:fadeUp .2s ease}
+.exp-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;margin-top:8px}
+.exp-label:first-child{margin-top:0}
+.vc-sent{font-size:12px;font-style:italic;font-family:'Playfair Display',serif;color:var(--ink2);background:var(--paper2);padding:7px 10px;border-radius:var(--r);border-left:2px solid var(--vc-acc,var(--paper3));line-height:1.6}
+.syn-row{display:flex;flex-wrap:wrap;gap:4px}
+.syn-tag{font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:999px;background:var(--paper2);color:var(--ink2);border:1px solid var(--paper3)}
+.vc-hint{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink4);margin-top:8px}
+.del-btn{background:none;border:none;font-size:12px;color:var(--ink4);cursor:pointer;opacity:0;transition:opacity .15s}
+.vcard:hover .del-btn{opacity:1}
+.del-btn:hover{color:var(--red)}
+.add-form-panel{background:var(--paper2);border:1px solid var(--paper3);border-radius:var(--rlg);padding:1.25rem;margin-bottom:1rem;display:none}
+.add-form-panel.open{display:block;animation:fadeUp .2s ease}
+.add-form-panel h3{font-family:'Playfair Display',serif;font-size:15px;margin-bottom:.9rem}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.ff{display:flex;flex-direction:column;gap:3px}.ff.s2{grid-column:1/-1}
+.ff label{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase}
+.ff input,.ff select,.ff textarea{padding:7px 9px;border:1px solid var(--paper3);border-radius:var(--r);font-size:12px;color:var(--ink);background:white;outline:none}
+.ff textarea{resize:vertical;min-height:50px}
+.fa{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.btn-xs{padding:6px 14px;border-radius:var(--r);font-size:12px;border:1px solid var(--paper3);background:transparent;color:var(--ink2);cursor:pointer}
+.btn-xs.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── READING PAGE ── */
+.quest-track{display:flex;gap:8px;margin-bottom:1.25rem;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.quest-track::-webkit-scrollbar{display:none}
+.qlevel{flex-shrink:0;padding:8px 16px;border-radius:var(--rlg);border:1px solid var(--paper3);background:white;text-align:center;min-width:100px;cursor:pointer;transition:all .18s;position:relative}
+.qlevel.done{border-color:var(--teal);background:#d5ede1}
+.qlevel.active{border-color:var(--blue);background:#e6f1fb;border-width:2px}
+.qlevel.locked{opacity:.45;cursor:not-allowed}
+.ql-name{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.ql-title{font-size:13px;font-weight:500}
+.ql-stars{font-size:12px;color:var(--acc2)}
+.ql-lock{position:absolute;top:-6px;right:-6px;background:var(--ink3);color:white;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px}
+
+.reading-card{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);overflow:hidden}
+.rc-header{background:var(--ink);color:var(--paper);padding:1rem 1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.rc-level-badge{font-family:'DM Mono',monospace;font-size:10px;background:rgba(255,255,255,.15);color:rgba(250,248,244,.8);padding:2px 8px;border-radius:999px;margin-bottom:6px;display:inline-block}
+.rc-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;line-height:1.3}
+.rc-xp{font-size:11px;font-family:'DM Mono',monospace;color:rgba(250,248,244,.5);margin-top:4px}
+.rc-body{padding:1.25rem}
+.rc-article{font-size:14px;line-height:1.9;color:var(--ink);margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--rule2)}
+.rc-article p{margin-bottom:.75rem}
+.rc-article p:last-child{margin-bottom:0}
+.word-tip{border-bottom:1px dotted var(--blue);color:var(--blue);cursor:pointer;position:relative}
+.word-tip:hover::after{content:attr(data-th);position:absolute;bottom:calc(100%+4px);left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-size:11px;padding:3px 8px;border-radius:4px;white-space:nowrap;z-index:10;pointer-events:none}
+
+.q-section h4{font-family:'Playfair Display',serif;font-size:15px;margin-bottom:1rem}
+.q-item{margin-bottom:1rem}
+.q-text{font-size:13px;color:var(--ink);margin-bottom:.5rem;font-weight:500}
+.q-opts{display:flex;flex-direction:column;gap:6px}
+.q-opt{padding:8px 12px;border:1px solid var(--paper3);border-radius:var(--r);font-size:13px;color:var(--ink2);background:white;cursor:pointer;text-align:left;transition:all .15s}
+.q-opt:hover:not(.done){border-color:var(--blue);color:var(--blue)}
+.q-opt.correct{background:#d5ede1;border-color:var(--teal);color:#1a5a3a;font-weight:500}
+.q-opt.wrong{background:#fce8e8;border-color:var(--red);color:#8a1a1a}
+.q-opt.done{cursor:not-allowed}
+.q-translate{margin-top:.5rem}
+.q-translate textarea{width:100%;padding:8px;border:1px solid var(--paper3);border-radius:var(--r);font-size:13px;resize:vertical;min-height:60px;outline:none;color:var(--ink)}
+.q-translate textarea:focus{border-color:var(--blue)}
+.q-btn{margin-top:6px;padding:7px 16px;border:1px solid var(--blue);border-radius:var(--r);background:var(--blue);color:white;font-size:12px;cursor:pointer}
+.q-feedback{margin-top:6px;font-size:12px;padding:7px 10px;border-radius:var(--r);display:none}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:#d5ede1;color:#1a5a3a}
+.q-feedback.try{background:#f7ead5;color:#8a4a0a}
+
+.result-panel{display:none;margin-top:1.25rem;padding:1.25rem;border-radius:var(--rlg);text-align:center}
+.result-panel.show{display:block;animation:fadeUp .3s ease}
+.result-panel.pass{background:#d5ede1;border:1px solid #9fe1cb}
+.result-panel.fail{background:#fce8e8;border:1px solid #f09595}
+.rp-score{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;margin-bottom:.25rem}
+.rp-msg{font-size:14px;color:var(--ink2);margin-bottom:1rem}
+.rp-btn{padding:8px 24px;border-radius:var(--r);font-size:13px;border:none;cursor:pointer;font-weight:500}
+.rp-btn.next{background:var(--teal);color:white}
+.rp-btn.retry{background:var(--acc);color:white}
+
+/* ── WRITING PAGE ── */
+.writing-prompts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-bottom:1.5rem}
+.wp-card{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1rem;cursor:pointer;transition:all .15s;border-left:3px solid var(--paper3)}
+.wp-card:hover{border-color:var(--blue);transform:translateY(-1px)}
+.wp-card.selected{border-left-color:var(--blue);border-color:var(--blue);background:#e6f1fb}
+.wp-tag{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.wp-title{font-size:13px;font-weight:500;margin-bottom:3px}
+.wp-hint{font-size:11px;color:var(--ink3)}
+.writing-box{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);overflow:hidden}
+.wb-header{padding:1rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.wb-prompt{font-size:13px;font-style:italic;color:var(--ink2);flex:1}
+.wb-stats{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3)}
+.wb-body{padding:1.25rem}
+.writing-area{width:100%;min-height:160px;padding:0;border:none;font-family:'Playfair Display',serif;font-size:15px;line-height:1.9;color:var(--ink);resize:none;outline:none;background:transparent}
+.writing-area::placeholder{color:var(--ink4);font-style:italic}
+.wb-footer{padding:.75rem 1.25rem;border-top:1px solid var(--rule);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.check-btn{padding:8px 20px;background:var(--blue);color:white;border:none;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.check-btn:hover{background:#1a4f8a}
+.check-btn:disabled{background:var(--ink4);cursor:not-allowed}
+.ai-feedback{margin-top:1rem;padding:1rem 1.25rem;border-radius:var(--r);display:none}
+.ai-feedback.show{display:block;animation:fadeUp .25s ease}
+.ai-feedback.loading{background:var(--paper2);border:1px solid var(--paper3)}
+.ai-feedback.result{background:#e6f1fb;border:1px solid #b5d4f4}
+.ai-feedback.error{background:#fce8e8;border:1px solid #f09595}
+.fb-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.fb-text{font-size:13px;color:var(--ink);line-height:1.7}
+.fb-score-row{display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.fb-score{background:white;border-radius:var(--r);padding:5px 12px;text-align:center;border:1px solid var(--paper3)}
+.fb-score .val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--blue)}
+.fb-score .lbl{font-size:10px;color:var(--ink3)}
+.fb-corrections{margin-top:10px;padding-top:10px;border-top:1px solid rgba(26,24,20,.1)}
+.fb-corrections h5{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.correction-item{font-size:12px;margin-bottom:5px;padding:5px 9px;background:white;border-radius:var(--r);border-left:2px solid var(--acc)}
+.dot-loading{display:flex;gap:4px;align-items:center;padding:4px 0}
+.dot-loading span{width:6px;height:6px;background:var(--ink3);border-radius:50%;animation:bounce 1.2s infinite}
+.dot-loading span:nth-child(2){animation-delay:.2s}
+.dot-loading span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* ── SPEAKING PAGE ── */
+.speak-streak{display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1rem 1.25rem;margin-bottom:1.25rem}
+.streak-num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--acc2);line-height:1}
+.streak-info{flex:1}
+.streak-info h3{font-size:14px;font-weight:500}
+.streak-info p{font-size:12px;color:var(--ink3)}
+.streak-days{display:flex;gap:5px}
+.sd{width:24px;height:24px;border-radius:4px;background:var(--paper3);display:flex;align-items:center;justify-content:center;font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3)}
+.sd.done{background:var(--acc2);color:var(--ink)}
+.sd.today{background:var(--ink);color:var(--paper)}
+
+.daily-lesssons{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:1.5rem}
+.dlesson{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1.1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.dlesson::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--dl-acc,var(--paper3))}
+.dlesson:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,24,20,.08)}
+.dlesson.done{opacity:.7}
+.dlesson[data-type=shadow]{--dl-acc:#1a5fa8}.dlesson[data-type=repeat]{--dl-acc:#2a7a52}.dlesson[data-type=tongue]{--dl-acc:#c8502a}.dlesson[data-type=phrase]{--dl-acc:#5a3fa0}
+.dl-tag{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.dl-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.dl-desc{font-size:12px;color:var(--ink3);margin-bottom:8px}
+.dl-meta{display:flex;justify-content:space-between;align-items:center}
+.dl-time{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3)}
+.dl-done-badge{font-size:10px;background:#d5ede1;color:#1a5a3a;padding:2px 8px;border-radius:999px;font-family:'DM Mono',monospace}
+
+.speak-exercise{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);overflow:hidden;display:none}
+.speak-exercise.open{display:block;animation:fadeUp .25s ease}
+.se-header{padding:1rem 1.25rem;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center}
+.se-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
+.se-close{background:none;border:none;color:var(--ink3);font-size:18px;cursor:pointer}
+.se-body{padding:1.25rem}
+.se-instruction{font-size:13px;color:var(--ink2);margin-bottom:1rem;padding:10px 14px;background:var(--paper2);border-radius:var(--r);line-height:1.7}
+.se-phrase{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.se-phonetic{font-size:13px;font-family:'DM Mono',monospace;color:var(--blue);margin-bottom:.5rem}
+.se-thai{font-size:13px;color:var(--ink2);margin-bottom:1rem}
+.listen-btn{padding:9px 20px;border:1px solid var(--blue);border-radius:var(--r);background:white;color:var(--blue);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;margin-bottom:1rem}
+.listen-btn:hover{background:var(--blue);color:white}
+.listen-btn.speaking{background:var(--blue);color:white;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+.rec-btn{padding:9px 20px;border:1px solid var(--acc);border-radius:var(--r);background:white;color:var(--acc);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s}
+.rec-btn:hover{background:var(--acc);color:white}
+.rec-btn.recording{background:var(--acc);color:white}
+.speak-controls{display:flex;gap:8px;flex-wrap:wrap}
+.tip-box{margin-top:1rem;padding:10px 14px;background:#f7ead5;border-radius:var(--r);border-left:2px solid var(--acc2)}
+.tip-box p{font-size:12px;color:#8a4a0a;line-height:1.6}
+.tip-box strong{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.04em;display:block;margin-bottom:3px;color:#6a3a0a;text-transform:uppercase}
+.nav-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rule)}
+.nav-btn{padding:7px 16px;border:1px solid var(--paper3);border-radius:var(--r);font-size:12px;color:var(--ink2);background:white;cursor:pointer}
+.nav-btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── MISC ── */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--ink3)}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink2);margin-bottom:.5rem}
+.progress-mini{height:3px;background:var(--paper3);border-radius:2px;overflow:hidden;margin-top:6px}
+.progress-mini-fill{height:100%;background:var(--teal);border-radius:2px;transition:width .4s}
+
+mark{background:#f7e8a0;border-radius:2px;padding:0 1px}
+
+@media(max-width:600px){
+  nav{padding:0 1rem}
+  .nav-logo{font-size:15px;margin-right:1rem}
+  .ntab{padding:5px 10px;font-size:12px}
+  .xp-bar-wrap{display:none}
+  .page{padding:1rem}
+  .fg{grid-template-columns:1fr}
+  .ff.s2{grid-column:1}
+  .vgrid{grid-template-columns:1fr}
+}
+/* ── LISTENING / TOEIC ── */
+.lt-hero{background:var(--ink);color:var(--paper);border-radius:var(--rlg);padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.lt-hero-left h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.lt-hero-left p{font-size:12px;color:rgba(250,248,244,.55);font-family:'DM Mono',monospace}
+.lt-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.lt-stat{background:rgba(255,255,255,.08);border-radius:var(--r);padding:6px 14px;text-align:center}
+.lt-stat .v{font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--acc2)}
+.lt-stat .l{font-size:10px;color:rgba(250,248,244,.45);text-transform:uppercase;letter-spacing:.04em}
+.lt-part-select{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem}
+.lt-part-btn{padding:8px 16px;border:1px solid var(--paper3);border-radius:var(--rlg);background:white;font-size:12px;font-family:'DM Mono',monospace;color:var(--ink2);cursor:pointer;transition:all .15s;text-align:center}
+.lt-part-btn:hover{border-color:var(--blue);color:var(--blue)}
+.lt-part-btn.on{background:var(--blue);color:white;border-color:var(--blue)}
+.lt-part-btn .pt{font-size:10px;opacity:.7;display:block;margin-top:2px}
+.lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:1.5rem}
+.lt-card{background:white;border:1px solid var(--paper3);border-radius:var(--rlg);padding:1rem 1.1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.lt-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lc,var(--paper3))}
+.lt-card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,24,20,.08)}
+.lt-card[data-part="1"]{--lc:#1a5fa8}.lt-card[data-part="2"]{--lc:#2a7a52}.lt-card[data-part="3"]{--lc:#5a3fa0}.lt-card[data-part="4"]{--lc:#c8502a}
+.lc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+.lc-part{font-family:'DM Mono',monospace;font-size:10px;padding:2px 8px;border-radius:999px;font-weight:500}
+.lcp1{background:#dce9f8;color:#0f3a7a}.lcp2{background:#d5ede1;color:#1a5a3a}.lcp3{background:#e8ddf7;color:#3a1f8a}.lcp4{background:#f7e0d8;color:#8a2a10}
+.lc-year{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3)}
+.lc-title{font-size:14px;font-weight:500;margin-bottom:3px}
+.lc-desc{font-size:11px;color:var(--ink3);margin-bottom:8px;line-height:1.5}
+.lc-meta{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.lc-qs{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3)}
+.lc-done{font-size:10px;background:#d5ede1;color:#1a5a3a;padding:2px 8px;border-radius:999px;font-family:'DM Mono',monospace}
+.lc-score{font-size:10px;background:#dce9f8;color:#0f3a7a;padding:2px 8px;border-radius:999px;font-family:'DM Mono',monospace}
+
+/* Listening Test UI */
+.lt-test{display:none;background:white;border:1px solid var(--paper3);border-radius:var(--rlg);overflow:hidden}
+.lt-test.open{display:block;animation:fadeUp .25s ease}
+.lt-test-header{background:var(--ink);color:var(--paper);padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lt-test-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
+.lt-test-meta{font-size:11px;font-family:'DM Mono',monospace;color:rgba(250,248,244,.55)}
+.lt-timer-box{display:flex;align-items:center;gap:10px}
+.lt-timer{font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:var(--acc2);min-width:60px;text-align:center}
+.lt-timer.warn{color:#f7c94a;animation:pulse .8s infinite}
+.lt-timer.danger{color:#f07070;animation:pulse .4s infinite}
+.lt-close-btn{background:rgba(255,255,255,.1);border:none;color:var(--paper);padding:5px 12px;border-radius:var(--r);font-size:12px;cursor:pointer}
+.lt-body{padding:1.25rem}
+.lt-progress{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.lt-prog-bar{flex:1;height:4px;background:var(--paper3);border-radius:2px;overflow:hidden}
+.lt-prog-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .3s}
+.lt-prog-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);white-space:nowrap}
+
+/* Part 1 - Photo */
+.lt-photo-wrap{text-align:center;margin-bottom:1.25rem}
+.lt-photo{width:100%;max-width:380px;height:220px;background:var(--paper2);border-radius:var(--r);border:1px solid var(--paper3);display:inline-flex;align-items:center;justify-content:center;font-size:64px;flex-direction:column;gap:8px}
+.lt-photo-label{font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);margin-top:4px}
+
+/* Audio player */
+.audio-player{background:var(--paper2);border:1px solid var(--paper3);border-radius:var(--rlg);padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.play-btn{width:44px;height:44px;border-radius:50%;background:var(--blue);border:none;color:white;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.play-btn:hover{background:#1a4f8a;transform:scale(1.05)}
+.play-btn.playing{background:var(--teal)}
+.play-btn.disabled{background:var(--ink4);cursor:not-allowed}
+.audio-info{flex:1;min-width:0}
+.audio-title{font-size:12px;font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.audio-transcript-btn{font-size:11px;color:var(--blue);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif}
+.audio-bar{width:100%;height:4px;background:var(--paper3);border-radius:2px;overflow:hidden;margin-top:4px}
+.audio-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .1s linear}
+.audio-plays{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);white-space:nowrap}
+.transcript-box{background:var(--paper2);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;border-left:2px solid var(--blue);display:none;font-size:13px;color:var(--ink2);line-height:1.7;font-style:italic}
+.transcript-box.show{display:block;animation:fadeUp .2s ease}
+
+/* Questions */
+.lt-q-wrap{margin-bottom:1rem}
+.lt-q-num{font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.lt-q-text{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:.75rem;line-height:1.6}
+.lt-opts{display:flex;flex-direction:column;gap:6px}
+.lt-opt{padding:9px 14px;border:1px solid var(--paper3);border-radius:var(--r);font-size:13px;color:var(--ink2);background:white;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:10px}
+.lt-opt:hover:not(.locked){border-color:var(--blue);color:var(--blue);background:#f0f5fc}
+.lt-opt.selected:not(.revealed){border-color:var(--blue);background:#e6f1fb;color:var(--blue)}
+.lt-opt.correct{background:#d5ede1;border-color:var(--teal);color:#1a5a3a;font-weight:500}
+.lt-opt.wrong{background:#fce8e8;border-color:var(--red);color:#8a1a1a}
+.lt-opt.locked{cursor:not-allowed}
+.lt-opt-key{font-family:'DM Mono',monospace;font-size:11px;width:20px;height:20px;border-radius:4px;background:var(--paper2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:500}
+.lt-explanation{background:#e6f1fb;border-radius:var(--r);padding:.75rem 1rem;margin-top:.75rem;font-size:12px;color:var(--ink2);line-height:1.6;display:none;border-left:2px solid var(--blue)}
+.lt-explanation.show{display:block;animation:fadeUp .2s ease}
+.lt-nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--rule)}
+.lt-nav-btn{padding:8px 20px;border-radius:var(--r);font-size:13px;cursor:pointer;font-weight:500;border:1px solid var(--paper3);background:white;color:var(--ink2);transition:all .15s}
+.lt-nav-btn:hover{background:var(--paper2)}
+.lt-nav-btn.pri{background:var(--blue);color:white;border-color:var(--blue)}
+.lt-nav-btn.pri:hover{background:#1a4f8a}
+
+/* Result screen */
+.lt-result{display:none;text-align:center;padding:2rem 1rem}
+.lt-result.show{display:block;animation:fadeUp .3s ease}
+.lt-result-score{font-family:'Playfair Display',serif;font-size:56px;font-weight:700;line-height:1}
+.lt-result-label{font-size:13px;color:var(--ink3);margin:6px 0 1.25rem;font-family:'DM Mono',monospace}
+.lt-result-bars{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.lt-result-bar{background:var(--paper2);border:1px solid var(--paper3);border-radius:var(--rlg);padding:12px 20px;min-width:100px;text-align:center}
+.lt-result-bar .bv{font-family:'DM Mono',monospace;font-size:22px;font-weight:500}
+.lt-result-bar .bl{font-size:11px;color:var(--ink3)}
+.score-pass{color:var(--teal)}.score-avg{color:var(--blue)}.score-fail{color:var(--red)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><span></span>ENG Journey</div>
+  <div class="nav-tabs">
+    <button class="ntab on" onclick="goPage('vocab')" id="nt-vocab">📚 คำศัพท์</button>
+    <button class="ntab" onclick="goPage('reading')" id="nt-reading">📖 อ่าน <span class="badge" id="read-badge"></span></button>
+    <button class="ntab" onclick="goPage('writing')" id="nt-writing">✍️ เขียน</button>
+    <button class="ntab" onclick="goPage('speaking')" id="nt-speaking">🎙️ พูด <span class="badge" id="speak-badge" style="display:none"></span></button>
+    <button class="ntab" onclick="goPage('listening')" id="nt-listening">🎧 ฟัง TOEIC</button>
+  </div>
+  <div class="nav-xp">
+    <div class="xp-bar-wrap">
+      <span class="xp-label">XP</span>
+      <div class="xp-bar"><div class="xp-fill" id="xp-fill-bar" style="width:0%"></div></div>
+      <span class="xp-num" id="xp-num">0</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ VOCAB PAGE ═══════════════ -->
+<div class="page on" id="page-vocab">
+  <div class="page-heading">สมุดคำศัพท์</div>
+  <div class="page-sub">คำศัพท์ภาษาอังกฤษเทรนด์ปัจจุบัน — แตะการ์ดเพื่อดูรายละเอียด</div>
+
+  <div class="vocab-toolbar">
+    <input type="text" id="vq" placeholder="ค้นหาคำศัพท์..." oninput="renderVocab()">
+    <button class="tb-btn on" id="vb-all" onclick="setVMode('all')">ทั้งหมด</button>
+    <button class="tb-btn" id="vb-star" onclick="setVMode('star')">★ บันทึก</button>
+    <button class="tb-btn on" id="vb-add" onclick="toggleAddForm()" style="background:var(--ink);color:var(--paper);border-color:var(--ink)">+ เพิ่มคำ</button>
+  </div>
+
+  <div class="add-form-panel" id="add-panel">
+    <h3>เพิ่มคำศัพท์ใหม่</h3>
+    <div class="fg">
+      <div class="ff"><label>คำศัพท์</label><input id="fw" placeholder="vibe check"></div>
+      <div class="ff"><label>คำอ่านไทย</label><input id="fr" placeholder="ไวบ์ เช็ก (phrase)"></div>
+      <div class="ff"><label>หมวดคำ</label><select id="fc"><option value="phrase">phrase</option><option value="noun">noun</option><option value="verb">verb</option><option value="adj">adjective</option><option value="adv">adverb</option><option value="idiom">idiom</option></select></div>
+      <div class="ff"><label>คำแปลไทย</label><input id="ft" placeholder="เช็กบรรยากาศ"></div>
+      <div class="ff s2"><label>ความหมายอังกฤษ</label><input id="fd" placeholder="A quick check on someone's mood or the energy in a situation"></div>
+      <div class="ff s2"><label>ประโยคตัวอย่าง</label><textarea id="fs" placeholder="Let's do a vibe check before the meeting starts."></textarea></div>
+      <div class="ff s2"><label>Synonyms (คั่นคอมมา)</label><input id="fy" placeholder="mood check, atmosphere check, energy read"></div>
+    </div>
+    <div class="fa">
+      <button class="btn-xs" onclick="toggleAddForm()">ยกเลิก</button>
+      <button class="btn-xs pri" onclick="saveVocab()">บันทึก</button>
+    </div>
+  </div>
+
+  <div class="cat-pills" id="v-cats"></div>
+  <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:.75rem" id="v-count"></div>
+  <div class="vgrid" id="vgrid"></div>
+</div>
+
+<!-- ═══════════════ READING PAGE ═══════════════ -->
+<div class="page" id="page-reading">
+  <div class="page-heading">บทเรียนการอ่าน</div>
+  <div class="page-sub">ผ่านเควสแต่ละระดับเพื่อปลดล็อกบทความถัดไป — ต้องได้คะแนน 70% ขึ้นไปถึงผ่าน</div>
+
+  <div class="quest-track" id="quest-track"></div>
+  <div id="reading-content"></div>
+</div>
+
+<!-- ═══════════════ WRITING PAGE ═══════════════ -->
+<div class="page" id="page-writing">
+  <div class="page-heading">ฝึกเขียน</div>
+  <div class="page-sub">เลือกหัวข้อ เขียนประโยคหรือย่อหน้า แล้วให้ AI ตรวจ grammar และสไตล์การเขียน</div>
+
+  <div class="writing-prompts" id="writing-prompts"></div>
+
+  <div class="writing-box" id="writing-box">
+    <div class="wb-header">
+      <div class="wb-prompt" id="wb-prompt-text">เลือกหัวข้อด้านบนเพื่อเริ่มเขียน</div>
+      <div class="wb-stats"><span id="word-count">0 words</span></div>
+    </div>
+    <div class="wb-body">
+      <textarea class="writing-area" id="writing-area" placeholder="เริ่มเขียนที่นี่..." oninput="updateWordCount()"></textarea>
+      <div class="ai-feedback" id="ai-feedback">
+        <div class="fb-label">AI Feedback</div>
+        <div id="ai-feedback-body"></div>
+      </div>
+    </div>
+    <div class="wb-footer">
+      <button class="check-btn" id="check-btn" onclick="checkWriting()">ตรวจการเขียน ✦</button>
+      <button class="btn-xs" onclick="clearWriting()">ล้าง</button>
+      <span style="font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace;margin-left:auto">ใช้ AI ตรวจ grammar, สไตล์ และแนะนำ</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SPEAKING PAGE ═══════════════ -->
+<div class="page" id="page-speaking">
+  <div class="page-heading">ฝึกพูด — Daily Speaking</div>
+  <div class="page-sub">วันละ 5–10 นาที ฝึกออกเสียง shadowing และบทสนทนา</div>
+
+  <div class="speak-streak">
+    <div class="streak-num" id="streak-num">0</div>
+    <div class="streak-info">
+      <h3>วันติดต่อกัน</h3>
+      <p>ฝึกพูดทุกวันเพื่อสร้าง streak!</p>
+    </div>
+    <div>
+      <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:5px;text-align:right">7 วันล่าสุด</div>
+      <div class="streak-days" id="streak-days"></div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;font-weight:500;margin-bottom:.75rem;color:var(--ink2)">บทเรียนวันนี้</div>
+  <div class="daily-lesssons" id="daily-lessons"></div>
+
+  <div class="speak-exercise" id="speak-exercise">
+    <div class="se-header">
+      <div class="se-title" id="se-title"></div>
+      <button class="se-close" onclick="closeExercise()">✕</button>
+    </div>
+    <div class="se-body" id="se-body"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ LISTENING PAGE ═══════════════ -->
+<div class="page" id="page-listening">
+  <div class="lt-hero">
+    <div class="lt-hero-left">
+      <h2>🎧 TOEIC Listening Practice</h2>
+      <p>Format เหมือนสอบจริง 2018–2025 · Part 1–4 · จับเวลา · ย้อนหลัง 10 ปี</p>
+      <div class="lt-stats">
+        <div class="lt-stat"><div class="v" id="lt-total-done">0</div><div class="l">บทเรียนที่ผ่าน</div></div>
+        <div class="lt-stat"><div class="v" id="lt-best-score">—</div><div class="l">คะแนนสูงสุด</div></div>
+        <div class="lt-stat"><div class="v" id="lt-avg-score">—</div><div class="l">คะแนนเฉลี่ย</div></div>
+        <div class="lt-stat"><div class="v" id="lt-xp-total">0</div><div class="l">XP จากการฟัง</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lt-part-select" id="lt-part-select">
+    <button class="lt-part-btn on" onclick="filterLTPart('all')" id="ltpb-all">ทั้งหมด<span class="pt">All Parts</span></button>
+    <button class="lt-part-btn" onclick="filterLTPart('1')" id="ltpb-1">Part 1<span class="pt">Photographs</span></button>
+    <button class="lt-part-btn" onclick="filterLTPart('2')" id="ltpb-2">Part 2<span class="pt">Q&amp;Response</span></button>
+    <button class="lt-part-btn" onclick="filterLTPart('3')" id="ltpb-3">Part 3<span class="pt">Conversations</span></button>
+    <button class="lt-part-btn" onclick="filterLTPart('4')" id="ltpb-4">Part 4<span class="pt">Short Talks</span></button>
+  </div>
+
+  <div class="lesson-grid" id="lt-lesson-grid"></div>
+
+  <div class="lt-test" id="lt-test">
+    <div class="lt-test-header">
+      <div>
+        <div class="lt-test-title" id="lt-test-title"></div>
+        <div class="lt-test-meta" id="lt-test-meta"></div>
+      </div>
+      <div class="lt-timer-box">
+        <div class="lt-timer" id="lt-timer">—</div>
+        <button class="lt-close-btn" onclick="closeLTTest()">✕ ออก</button>
+      </div>
+    </div>
+    <div class="lt-body">
+      <div class="lt-progress">
+        <div class="lt-prog-bar"><div class="lt-prog-fill" id="lt-prog-fill" style="width:0%"></div></div>
+        <div class="lt-prog-label" id="lt-prog-label">0 / 0</div>
+      </div>
+      <div id="lt-question-area"></div>
+      <div class="lt-result" id="lt-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════ -->
+<script>
+// ══════════════════ ALL CONSTANTS FIRST ══════════════════
+
+const DEFAULT_WORDS = [
+  {id:1,word:'vibe',read:'ไวบ์ (n.)',cat:'noun',def:'The overall feeling or mood of a person, place, or situation',thai:'บรรยากาศ / ความรู้สึก / ความเวฟ',sentence:'This café has such a cozy vibe — I love working here.',synonyms:['atmosphere','mood','energy','aura'],starred:false},
+  {id:2,word:'vibe check',read:'ไวบ์ เช็ก (phrase)',cat:'phrase',def:"A quick assessment of someone's mood or the energy in a situation",thai:'เช็กบรรยากาศ / ดูความรู้สึก',sentence:"Let's do a vibe check before the meeting — is everyone okay?",synonyms:['mood check','gut check','energy read'],starred:false},
+  {id:3,word:'rizz',read:'ริซ (n.)',cat:'noun',def:'Natural charm or ability to attract people effortlessly',thai:'เสน่ห์ / ความมีเสน่ห์โดยธรรมชาติ',sentence:'He walked in and everyone noticed — the guy has serious rizz.',synonyms:['charm','charisma','appeal','magnetism'],starred:false},
+  {id:4,word:'slay',read:'สเลย์ (v.)',cat:'verb',def:'To do something impressively well or to look amazing',thai:'โคตรเก่ง / เจ๋งมาก / ดูดีมาก',sentence:'She slayed the presentation — the client was totally impressed.',synonyms:['crush it','nail it','dominate','ace'],starred:false},
+  {id:5,word:'lowkey',read:'โลกี่ (adv.)',cat:'adv',def:'Secretly or quietly; to a small but noticeable degree',thai:'แอบ... / นิดหน่อย / ไม่ค่อยบอกใคร',sentence:"I'm lowkey obsessed with that new series on Netflix.",synonyms:['secretly','quietly','subtly','kind of'],starred:false},
+  {id:6,word:'hyperfixate',read:'ไฮเพอร์ฟิกเซต (v.)',cat:'verb',def:'To become extremely focused on one topic for a period of time',thai:'โฟกัสอย่างเข้มข้นจนลืมโลก / หมกมุ่น',sentence:'She hyperfixated on learning guitar for three weeks straight.',synonyms:['obsess over','fixate on','deep-dive','immerse in'],starred:false},
+  {id:7,word:'delulu',read:'เดอลูลู (adj.)',cat:'adj',def:'Short for "delusional" — having unrealistic or overly optimistic beliefs',thai:'หลงโลก / คิดเพ้อฝันเกินจริง',sentence:'Thinking you will get a call back after ghosting them? A bit delulu.',synonyms:['delusional','unrealistic','wishful','fantasy-prone'],starred:false},
+  {id:8,word:'understood the assignment',read:'อันเดอร์สตูด เดอะ อะไซน์เมนท์ (idiom)',cat:'idiom',def:'Completely grasped what was expected and delivered perfectly',thai:'เข้าใจสิ่งที่ต้องทำและทำได้ดีมาก',sentence:'Look at her outfit for the gala — she totally understood the assignment.',synonyms:['nailed it','got it right','read the room','hit the mark'],starred:false},
+  {id:9,word:'situationship',read:'ซิชชูเอชั่นชิพ (n.)',cat:'noun',def:'A romantic relationship that exists without a clear label or commitment',thai:'ความสัมพันธ์ที่ไม่ชัดเจน / ไม่รู้ว่าคืออะไร',sentence:"We've been hanging out for months but it feels like a situationship.",synonyms:['undefined relationship','talking stage','almost relationship'],starred:false},
+  {id:10,word:'burnout',read:'เบิร์นเอาท์ (n.)',cat:'noun',def:'A state of mental and physical exhaustion caused by prolonged stress',thai:'หมดไฟ / หมดแรงจากความเครียดสะสม',sentence:'After working overtime every week, he hit a complete burnout.',synonyms:['exhaustion','fatigue','depletion','overload'],starred:false},
+  {id:11,word:'gaslight',read:'แก็สไลท์ (v.)',cat:'verb',def:"To manipulate someone into questioning their own feelings or reality",thai:'บิดเบือนความจริงเพื่อให้อีกฝ่ายสงสัยตัวเอง',sentence:'She gaslighted him into thinking the argument was entirely his fault.',synonyms:['manipulate','deceive','distort','psychologically abuse'],starred:false},
+  {id:12,word:'touch grass',read:'ทัช กราส (idiom)',cat:'idiom',def:'To go outside and spend time in the real world instead of being online',thai:'ออกไปสัมผัสโลกจริง / หยุดอยู่หน้าจอ',sentence:"You've been scrolling for six hours. Go touch grass.",synonyms:['go outside','get fresh air','disconnect','take a break'],starred:false},
+  {id:13,word:'era',read:'อีรา (n.)',cat:'noun',def:'A distinct phase or chapter of your life defined by a certain identity',thai:'ยุคสมัย / ช่วงชีวิตที่มีเอกลักษณ์เฉพาะ',sentence:"I'm in my fitness era right now — gym every single day.",synonyms:['phase','period','chapter','stage'],starred:false},
+  {id:14,word:'main character energy',read:'เมน แคแรคเตอร์ เอเนอจี (phrase)',cat:'phrase',def:"The confident feeling of being the hero of your own story",thai:'ความรู้สึกว่าตัวเองเป็นพระเอก/นางเอกของชีวิต',sentence:'She walked in like she owned the place — pure main character energy.',synonyms:['confidence','protagonist mindset','self-assurance'],starred:false},
+  {id:15,word:'gaslighting',read:'แก็สไลท์ติง (n.)',cat:'noun',def:"Psychological manipulation that makes someone doubt their own perception",thai:'การบิดเบือนจิตใจ / ทำให้คนอื่นสงสัยความจริง',sentence:'Recognizing gaslighting is the first step to setting healthy boundaries.',synonyms:['manipulation','psychological abuse','mind games'],starred:false},
+  {id:16,word:'ghosting',read:'โกสติง (n.)',cat:'noun',def:'Suddenly cutting off all communication with someone without explanation',thai:'หายไปเฉยๆ / ตัดการติดต่อโดยไม่บอกกล่าว',sentence:'After three weeks of texting every day, he just started ghosting her.',synonyms:['disappearing','silent treatment','cutting off','vanishing'],starred:false},
+  {id:17,word:'no cap',read:'โน แค็ป (phrase)',cat:'phrase',def:'Meaning "no lie" — used to emphasize that you are being completely honest',thai:'ไม่โกหก / จริงๆ นะ / ไม่ได้พูดเล่น',sentence:"That was the best ramen I've ever had — no cap.",synonyms:['for real','honestly','no joke','straight up'],starred:false},
+  {id:18,word:'rent-free',read:'เรนท์ ฟรี (adv.)',cat:'adv',def:"Living in someone's mind without effort — used when you can't stop thinking about something",thai:'อยู่ในหัวตลอดเวลาโดยไม่ได้ตั้งใจ',sentence:"That song has been living rent-free in my head for a week.",synonyms:["stuck in your head","can't stop thinking about",'obsessing over'],starred:false},
+  {id:19,word:'grind',read:'ไกรนด์ (v./n.)',cat:'verb',def:'To work very hard and persistently toward a goal',thai:'ขยันทำงาน / ทุ่มสุดตัว / ฝึก',sentence:"She's been grinding 12 hours a day to launch her startup.",synonyms:['hustle','work hard','push through','persist'],starred:false},
+  {id:20,word:'aesthetic',read:'เอสเธติก (n./adj.)',cat:'noun',def:'A particular visual style or set of qualities that defines how something looks and feels',thai:'สไตล์ภาพ / ความสวยงามในแบบของตัวเอง',sentence:"Her whole room has a dark academia aesthetic — I love it.",synonyms:['style','look','vibe','visual identity'],starred:false},
+];
+
+const LEVELS = [
+  {id:'a1',name:'A1',title:'Beginner',color:'#2a7a52',xpReward:20,passScore:70},
+  {id:'a2',name:'A2',title:'Elementary',color:'#1a5fa8',xpReward:30,passScore:70},
+  {id:'b1',name:'B1',title:'Intermediate',color:'#5a3fa0',xpReward:50,passScore:70},
+  {id:'b2',name:'B2',title:'Upper-Inter',color:'#c8502a',xpReward:80,passScore:75},
+  {id:'c1',name:'C1',title:'Advanced',color:'#8a3a5a',xpReward:120,passScore:80},
+];
+
+const ARTICLES = {
+  a1: {
+    title: 'My Daily Routine',
+    text: `<p>Every morning, I <span class="word-tip" data-th="ตื่นนอน">wake up</span> at 7 o'clock. First, I brush my teeth and wash my face. Then, I eat breakfast. I usually have <span class="word-tip" data-th="ขนมปังปิ้ง">toast</span> and a cup of tea.</p>
+<p>After breakfast, I go to school. I <span class="word-tip" data-th="เดินทาง">travel</span> by bus. School starts at 8:30. I have many <span class="word-tip" data-th="วิชา">subjects</span> — English, Math, and Science.</p>
+<p>In the evening, I do my homework. I also read books for 30 minutes. I go to bed at 10 o'clock.</p>`,
+    questions: [
+      { type: 'mc', q: 'What time does the person wake up?', opts: ["6 o'clock","7 o'clock","8 o'clock","9 o'clock"], ans: 1 },
+      { type: 'mc', q: 'How does the person travel to school?', opts: ['By car','By bicycle','By bus','On foot'], ans: 2 },
+      { type: 'mc', q: 'What does the person eat for breakfast?', opts: ['Rice and soup','Eggs and coffee','Toast and tea','Fruit and juice'], ans: 2 },
+      { type: 'translate', q: 'แปลประโยคนี้เป็นภาษาอังกฤษ: "ฉันไปโรงเรียนโดยรถบัส"', sample: 'I go to school by bus.' },
+    ]
+  },
+  a2: {
+    title: 'Social Media and Teenagers',
+    text: `<p>Today, most teenagers <span class="word-tip" data-th="ใช้">use</span> social media every day. <span class="word-tip" data-th="แพลตฟอร์ม">Platforms</span> like TikTok, Instagram, and YouTube are very popular among young people.</p>
+<p>Social media helps people <span class="word-tip" data-th="เชื่อมต่อ">connect</span> with friends and family. They can share photos, videos, and ideas. However, spending too much time online can be <span class="word-tip" data-th="เป็นอันตราย">harmful</span>.</p>
+<p>Some teenagers feel <span class="word-tip" data-th="วิตกกังวล">anxious</span> when they cannot check their phone. This is sometimes called <span class="word-tip" data-th="ความกลัวการพลาดสิ่งต่างๆ">FOMO</span> — Fear Of Missing Out. It is important to have a healthy <span class="word-tip" data-th="ความสมดุล">balance</span> between online and offline life.</p>`,
+    questions: [
+      { type: 'mc', q: 'What does "FOMO" stand for?', opts: ['Fear Of More Online','Fear Of Missing Out','Feeling Of Moving On','Fun Of Meeting Others'], ans: 1 },
+      { type: 'mc', q: 'According to the article, what can spending too much time online cause?', opts: ['Better grades','More friends','Harmful effects','Faster internet'], ans: 2 },
+      { type: 'mc', q: "What is the article's main advice?", opts: ['Stop using social media','Use only TikTok','Balance online and offline life','Post more photos'], ans: 2 },
+      { type: 'translate', q: 'แปลประโยคนี้: "โซเชียลมีเดียช่วยให้ผู้คนเชื่อมต่อกับเพื่อน"', sample: 'Social media helps people connect with friends.' },
+    ]
+  },
+  b1: {
+    title: 'The Rise of Remote Work',
+    text: `<p>The COVID-19 <span class="word-tip" data-th="โรคระบาด">pandemic</span> dramatically changed the way millions of people work. What was once a <span class="word-tip" data-th="สิทธิพิเศษ">privilege</span> for a select few became an overnight <span class="word-tip" data-th="ความจำเป็น">necessity</span> for entire industries.</p>
+<p>Remote work offers significant <span class="word-tip" data-th="ความยืดหยุ่น">flexibility</span>. Employees can design their own schedules, <span class="word-tip" data-th="ลด">eliminate</span> long commutes, and work from virtually anywhere. Studies suggest that many remote workers report higher <span class="word-tip" data-th="ผลิตภาพ">productivity</span> and improved work-life balance.</p>
+<p>However, challenges <span class="word-tip" data-th="ยังคงมีอยู่">persist</span>. Many remote workers struggle with feelings of <span class="word-tip" data-th="ความโดดเดี่ยว">isolation</span> and find it difficult to <span class="word-tip" data-th="แยก">separate</span> their professional and personal lives. Companies must develop thoughtful policies to address these concerns.</p>`,
+    questions: [
+      { type: 'mc', q: 'What event made remote work widely adopted?', opts: ['The 2008 financial crisis','The COVID-19 pandemic','The rise of the internet','A major power outage'], ans: 1 },
+      { type: 'mc', q: 'What is one benefit of remote work mentioned in the article?', opts: ['Higher office costs','Longer commutes','Improved work-life balance','More meetings'], ans: 2 },
+      { type: 'mc', q: 'What challenge do remote workers face?', opts: ['Too many colleagues','Too much flexibility','Isolation and blurred boundaries','Better productivity'], ans: 2 },
+      { type: 'translate', q: 'แปลประโยคนี้: "พนักงานสามารถออกแบบตารางเวลาของตัวเองได้"', sample: 'Employees can design their own schedules.' },
+    ]
+  },
+  b2: {
+    title: 'The Psychology of Habit Formation',
+    text: `<p>Habits are the invisible architecture of everyday life. Neuroscientists estimate that approximately 40 to 45 percent of our daily <span class="word-tip" data-th="การกระทำ">actions</span> are not deliberate decisions but <span class="word-tip" data-th="นิสัย">habitual</span> responses encoded in the <span class="word-tip" data-th="ปมประสาทฐาน">basal ganglia</span> of the brain.</p>
+<p>Charles Duhigg, author of <em>The Power of Habit</em>, describes what he calls the "habit loop" — a three-part neurological pattern consisting of a <span class="word-tip" data-th="สัญญาณกระตุ้น">cue</span>, a routine, and a <span class="word-tip" data-th="รางวัล">reward</span>. Understanding this loop is considered the first step toward changing <span class="word-tip" data-th="พฤติกรรม">behaviors</span> that no longer serve us.</p>
+<p>Research from University College London suggests it takes an average of 66 days — not the commonly cited 21 — to <span class="word-tip" data-th="ทำให้อัตโนมัติ">automate</span> a new behavior. The key <span class="word-tip" data-th="ตัวแปร">variable</span> is not willpower but <span class="word-tip" data-th="ความสม่ำเสมอ">consistency</span>: small, repeated actions compound over time into lasting change.</p>`,
+    questions: [
+      { type: 'mc', q: 'According to the article, what percentage of daily actions are habitual?', opts: ['20-25%','40-45%','60-65%','80-85%'], ans: 1 },
+      { type: 'mc', q: "What are the three parts of Duhigg's habit loop?", opts: ['Plan, Action, Result','Cue, Routine, Reward','Desire, Effort, Outcome','Trigger, Behavior, Consequence'], ans: 1 },
+      { type: 'mc', q: 'How long does UCL research say it takes to automate a behavior?', opts: ['21 days','30 days','66 days','100 days'], ans: 2 },
+      { type: 'translate', q: 'แปลประโยคนี้: "การกระทำเล็กน้อยที่ทำซ้ำๆ กันสะสมกลายเป็นการเปลี่ยนแปลงที่ยั่งยืน"', sample: 'Small, repeated actions compound over time into lasting change.' },
+    ]
+  },
+  c1: {
+    title: 'Artificial Intelligence and the Labor Market',
+    text: `<p>The <span class="word-tip" data-th="การรวมตัว">integration</span> of artificial intelligence into the modern <span class="word-tip" data-th="เศรษฐกิจ">economy</span> has <span class="word-tip" data-th="จุดชนวน">ignited</span> both optimistic projections and <span class="word-tip" data-th="ความกังวล">apprehension</span> among economists, policymakers, and workers alike. Unlike previous waves of automation that primarily <span class="word-tip" data-th="แทนที่">displaced</span> routine manual labor, contemporary AI systems demonstrate <span class="word-tip" data-th="ความสามารถ">proficiency</span> in cognitive tasks once considered exclusively human.</p>
+<p>A 2023 study from Goldman Sachs estimated that generative AI could <span class="word-tip" data-th="ทำให้เป็นอัตโนมัติ">automate</span> roughly 300 million full-time equivalent jobs globally. Yet <span class="word-tip" data-th="นักประวัติศาสตร์">historians</span> of technology caution against <span class="word-tip" data-th="ความหายนะ">catastrophism</span>: each preceding technological <span class="word-tip" data-th="การปฏิวัติ">revolution</span>, from mechanized agriculture to computing, ultimately generated more employment than it eliminated, albeit after periods of painful <span class="word-tip" data-th="การเปลี่ยนแปลง">transition</span>.</p>
+<p>The critical <span class="word-tip" data-th="ตัวแปร">variable</span> is not whether AI will transform labor markets — that appears <span class="word-tip" data-th="หลีกเลี่ยงไม่ได้">inevitable</span> — but whether societies can equip workers with the <span class="word-tip" data-th="ทักษะ">competencies</span> required for an economy where human-AI <span class="word-tip" data-th="ความร่วมมือ">collaboration</span> defines <span class="word-tip" data-th="ข้อได้เปรียบในการแข่งขัน">competitive advantage</span>.</p>`,
+    questions: [
+      { type: 'mc', q: 'How does this wave of AI differ from previous automation?', opts: ['It is cheaper','It affects cognitive tasks not just manual labor','It is slower','It only affects manufacturing'], ans: 1 },
+      { type: 'mc', q: 'What is the tone of technology historians toward AI displacement fears?', opts: ['Highly alarmed','Supportive of catastrophism','Cautiously optimistic based on history','Completely dismissive'], ans: 2 },
+      { type: 'mc', q: 'According to the author, what is the "critical variable"?', opts: ['How fast AI develops','Whether jobs will be eliminated','Whether societies can reskill workers','Which companies adopt AI first'], ans: 2 },
+      { type: 'translate', q: 'แปลประโยคนี้: "สังคมต้องเตรียมแรงงานด้วยทักษะที่จำเป็นสำหรับเศรษฐกิจใหม่"', sample: 'Societies must equip workers with the skills required for the new economy.' },
+    ]
+  },
+};
+
+const WRITING_PROMPTS = [
+  { id:'daily', tag:'Daily Life', title:'Describe your morning routine', hint:'Tell about what you do every morning in 3-5 sentences.' },
+  { id:'opinion', tag:'Opinion', title:'Do you prefer city or countryside?', hint:'Give your opinion with at least 2 reasons.' },
+  { id:'story', tag:'Creative', title:'Write a short story about a lost key', hint:'Use past tense. Include a beginning, problem, and solution.' },
+  { id:'email', tag:'Formal', title:'Write an email to request a day off', hint:'Use polite formal language. Address it to "Dear Manager."' },
+  { id:'social', tag:'Social Media', title:'Write a caption for a travel photo', hint:'Write an engaging caption with 1-2 hashtags.' },
+  { id:'describe', tag:'Description', title:'Describe your favorite place', hint:'Use adjectives and sensory details (sight, smell, sound).' },
+];
+
+const DAILY_LESSONS = [
+  {
+    id:'shadow1', type:'shadow', title:'Shadowing — Daily Phrases',
+    desc:'ฝึกพูดตาม native speaker ทีละวลี',
+    time:'~5 นาที',
+    phrases:[
+      {en:"How's it going?",ph:'/haʊz ɪt ˈɡoʊɪŋ/',th:'เป็นยังไงบ้าง?',tip:'เสียง "going" ออกเสียงสระยาว โก-อิง'},
+      {en:"I'm good, thanks for asking.",ph:'/aɪm ɡʊd θæŋks fər ˈæskɪŋ/',th:'โอเคครับ/ค่ะ ขอบคุณที่ถาม',tip:'เชื่อม thanks for เป็นเสียงต่อกันไม่หยุด'},
+      {en:"That sounds great!",ph:'/ðæt saʊndz ɡreɪt/',th:'เยี่ยมมากเลย!',tip:'เสียง th ใน "that" เป็นเสียง ð ลิ้นแตะฟัน'},
+      {en:"Could you say that again?",ph:'/kʊd juː seɪ ðæt əˈɡen/',th:'พูดอีกทีได้ไหม?',tip:'could you มักออกเสียงติดกันว่า คุดยู'},
+    ]
+  },
+  {
+    id:'tongue1', type:'tongue', title:'Tongue Twisters',
+    desc:'ฝึกออกเสียงที่ยากด้วย tongue twister',
+    time:'~3 นาที',
+    phrases:[
+      {en:"She sells seashells by the seashore.",ph:'/ʃiː selz ˈsiːʃelz baɪ ðə ˈsiːʃɔːr/',th:'เธอขายเปลือกหอยริมชายหาด',tip:'เสียง sh กับ s ฝึกเปลี่ยนสลับกันอย่างรวดเร็ว'},
+      {en:"How much wood would a woodchuck chuck?",ph:'/haʊ mʌtʃ wʊd wʊd ə ˈwʊdtʃʌk tʃʌk/',th:'กระรอกดินจะขุดไม้มากแค่ไหน?',tip:'เสียง w และ ch สลับกันอย่างรวดเร็ว'},
+    ]
+  },
+  {
+    id:'phrase1', type:'phrase', title:'Everyday Expressions',
+    desc:'สำนวนที่ใช้ในชีวิตประจำวัน',
+    time:'~5 นาที',
+    phrases:[
+      {en:"I totally get what you mean.",ph:'/aɪ ˈtoʊtəli ɡet wɒt juː miːn/',th:'ฉันเข้าใจสิ่งที่คุณหมายถึงเลย',tip:'totally ออกเสียง โท-ทะ-ลี ไม่ใช่ โท-ทา-ลี'},
+      {en:"Let's figure it out together.",ph:"/lets ˈfɪɡər ɪt aʊt təˈɡeðər/",th:'มาช่วยกันคิดหาทางออก',tip:'figure out เป็น phrasal verb ออกเสียงติดกัน'},
+      {en:"That's a good point.",ph:"/ðæts ə ɡʊd pɔɪnt/",th:'นั่นเป็นประเด็นที่ดี',tip:"That is มักย่อเป็น That's ในการพูด"},
+      {en:"I see where you're coming from.",ph:"/aɪ siː wer jʊər ˈkʌmɪŋ frɒm/",th:'ฉันเข้าใจมุมมองของคุณ',tip:"where you're มักออกเสียงติดกันว่า แวร์-ยัวร์"},
+    ]
+  },
+  {
+    id:'repeat1', type:'repeat', title:'Minimal Pairs — th / t / d',
+    desc:'ฝึกแยกเสียงที่คนไทยมักสับสน',
+    time:'~4 นาที',
+    phrases:[
+      {en:"think / sink / drink",ph:'/θɪŋk/  /sɪŋk/  /drɪŋk/',th:'คิด / อ่าง / ดื่ม',tip:'เสียง th ลิ้นแตะระหว่างฟัน — ไม่ใช่เสียง ต หรือ ด'},
+      {en:"three / tree / free",ph:'/θriː/  /triː/  /friː/',th:'สาม / ต้นไม้ / ฟรี',tip:'three ลิ้นยื่นออก — tree ลิ้นไม่ยื่น'},
+      {en:"this / dis (slang) / miss",ph:'/ðɪs/  /dɪs/  /mɪs/',th:'นี่ / ดูถูก / คิดถึง',tip:'this เสียง ð ลิ้นแตะฟัน ไม่แข็งเหมือน d'},
+    ]
+  },
+];
+
+// ══════════════════ TOEIC LISTENING LESSONS ══════════════════
+const TOEIC_LESSONS = [
+  // ── PART 1 PHOTOGRAPH ──
+  {
+    id:'p1_2025_1', part:1, year:2025, title:'Office Meeting Room',
+    desc:'ดูภาพแล้วเลือกประโยคที่อธิบายภาพได้ถูกต้อง',
+    timeLimit:30, xp:15,
+    photo:'🏢', photoLabel:'ห้องประชุมในออฟฟิศ — มีโต๊ะ เก้าอี้ และกระดาน',
+    questions:[{
+      id:1, type:'photo',
+      audioText:'(A) Several people are seated around a conference table.\n(B) The chairs are stacked against the wall.\n(C) A woman is writing on the whiteboard.\n(D) The projector is hanging from the ceiling.',
+      options:['Several people are seated around a conference table.','The chairs are stacked against the wall.','A woman is writing on the whiteboard.','The projector is hanging from the ceiling.'],
+      answer:0,
+      explanation:'(A) ถูกต้อง — ภาพแสดงคนนั่งรอบโต๊ะประชุม (B) ผิด เก้าอี้ไม่ได้วางซ้อน (C) ผิด ไม่มีผู้หญิงเขียนกระดาน (D) ผิด projector ไม่ได้แขวนเพดาน'
+    }]
+  },
+  {
+    id:'p1_2024_1', part:1, year:2024, title:'Outdoor Market Scene',
+    desc:'ดูภาพตลาดกลางแจ้ง เลือกคำอธิบายที่ถูกต้อง',
+    timeLimit:30, xp:15,
+    photo:'🛒', photoLabel:'ตลาดกลางแจ้ง — มีแผงขายสินค้า ผู้ขาย และลูกค้า',
+    questions:[{
+      id:1, type:'photo',
+      audioText:'(A) The vendor is counting money at a stall.\n(B) Customers are browsing merchandise on display.\n(C) A truck is being loaded with produce.\n(D) The market is completely empty.',
+      options:['The vendor is counting money at a stall.','Customers are browsing merchandise on display.','A truck is being loaded with produce.','The market is completely empty.'],
+      answer:1,
+      explanation:'(B) ถูกต้อง — ลูกค้ากำลังดูสินค้าที่วางขาย (A) ผิด ไม่ได้แสดงการนับเงิน (C) ผิด ไม่มีรถบรรทุก (D) ผิด ตลาดไม่ได้ว่างเปล่า'
+    }]
+  },
+  {
+    id:'p1_2023_1', part:1, year:2023, title:'Warehouse Storage',
+    desc:'ดูภาพคลังสินค้า',
+    timeLimit:30, xp:15,
+    photo:'🏭', photoLabel:'คลังสินค้า — ชั้นวางสินค้าสูง กล่องสินค้า และรถยก',
+    questions:[{
+      id:1, type:'photo',
+      audioText:'(A) Workers are operating forklifts in the warehouse.\n(B) The shelves are completely bare.\n(C) Boxes are stacked neatly on the storage racks.\n(D) A manager is giving a presentation.',
+      options:['Workers are operating forklifts in the warehouse.','The shelves are completely bare.','Boxes are stacked neatly on the storage racks.','A manager is giving a presentation.'],
+      answer:2,
+      explanation:'(C) ถูกต้อง — กล่องวางเรียงบนชั้นเก็บสินค้า (A) ผิด ไม่ได้แสดงรถยก (B) ผิด ชั้นไม่ได้ว่าง (D) ผิด ไม่มีผู้จัดการนำเสนองาน'
+    }]
+  },
+  // ── PART 2 QUESTION-RESPONSE ──
+  {
+    id:'p2_2025_1', part:2, year:2025, title:'Workplace Q&A — Schedule',
+    desc:'ฟังคำถาม เลือกคำตอบที่เหมาะสมที่สุด',
+    timeLimit:45, xp:20,
+    questions:[
+      {
+        id:1, type:'qr',
+        audioText:'When is the quarterly report due?',
+        questionDisplay:'When is the quarterly report due?',
+        options:['It should be submitted by Friday afternoon.','The report is very detailed.','Yes, I finished the project.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบคำถาม When ด้วยเวลาที่ถูกต้อง (B) ผิด พูดถึงลักษณะของรายงาน ไม่ใช่กำหนดส่ง (C) ผิด เป็นการตอบด้วย Yes ซึ่งไม่เหมาะกับคำถาม When'
+      },
+      {
+        id:2, type:'qr',
+        audioText:'Would you like me to reschedule the client meeting?',
+        questionDisplay:'Would you like me to reschedule the client meeting?',
+        options:["No, the client prefers mornings.",'The meeting was very productive.','I already called the client yesterday.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบ Would you like ด้วยการให้เหตุผลว่าไม่ต้องเพราะลูกค้าชอบช่วงเช้า (B) ผิด พูดถึงผลลัพธ์ของการประชุม (C) ผิด ไม่ตอบคำถามโดยตรง'
+      },
+      {
+        id:3, type:'qr',
+        audioText:"Who's responsible for the new product launch?",
+        questionDisplay:"Who's responsible for the new product launch?",
+        options:["The product launches next month.",'Sarah from the marketing team is leading it.',"I haven't seen the product yet."],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ตอบคำถาม Who ด้วยชื่อและตำแหน่งของผู้รับผิดชอบ (A) ผิด พูดถึงเวลา ไม่ใช่บุคคล (C) ผิด ไม่เกี่ยวข้องกับคำถาม'
+      }
+    ]
+  },
+  {
+    id:'p2_2024_1', part:2, year:2024, title:'Office Daily Conversations',
+    desc:'คำถาม-คำตอบในสถานการณ์ออฟฟิศ',
+    timeLimit:45, xp:20,
+    questions:[
+      {
+        id:1, type:'qr',
+        audioText:'Have you reviewed the contract yet?',
+        questionDisplay:'Have you reviewed the contract yet?',
+        options:["I'll look it over this afternoon.",'The contract is in the drawer.','Contracts are important documents.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบ Have you...yet ด้วยแผนที่จะทำ (B) ผิด บอกว่าอยู่ที่ไหน แต่ไม่ตอบว่าได้ดูหรือยัง (C) ผิด พูดทั่วๆ ไปไม่ตอบคำถาม'
+      },
+      {
+        id:2, type:'qr',
+        audioText:'Why was the team meeting postponed?',
+        questionDisplay:'Why was the team meeting postponed?',
+        options:['The director had an urgent call to attend.','The meeting room is on the third floor.','We meet every Tuesday morning.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบคำถาม Why ด้วยเหตุผลที่ชัดเจน (B) ผิด บอกสถานที่ ไม่ใช่เหตุผล (C) ผิด พูดถึงความถี่ ไม่ตอบคำถาม Why'
+      },
+      {
+        id:3, type:'qr',
+        audioText:"Could you send me the updated price list?",
+        questionDisplay:"Could you send me the updated price list?",
+        options:["Of course, I'll email it right away.",'The prices went up last quarter.','Our products are competitively priced.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบคำขอด้วยการตกลงและบอกวิธีดำเนินการ (B) ผิด พูดเรื่องราคาโดยทั่วไป (C) ผิด ไม่ตอบรับคำขอโดยตรง'
+      }
+    ]
+  },
+  {
+    id:'p2_2022_1', part:2, year:2022, title:'Travel & Logistics',
+    desc:'บทสนทนาเกี่ยวกับการเดินทางและโลจิสติกส์',
+    timeLimit:45, xp:20,
+    questions:[
+      {
+        id:1, type:'qr',
+        audioText:'How long does it take to get to the airport from here?',
+        questionDisplay:'How long does it take to get to the airport from here?',
+        options:["About 40 minutes by taxi, depending on traffic.",'The airport is very modern.','I usually fly business class.'],
+        answer:0,
+        explanation:'(A) ถูกต้อง — ตอบ How long ด้วยระยะเวลาและวิธีการเดินทาง (B) ผิด พูดถึงคุณภาพสนามบิน (C) ผิด ไม่เกี่ยวกับเวลาเดินทาง'
+      },
+      {
+        id:2, type:'qr',
+        audioText:'Where should I pick up my baggage?',
+        questionDisplay:'Where should I pick up my baggage?',
+        options:["Your flight doesn't leave until 6.",'Carousel 7 at the international terminal.','I always travel light.'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ตอบ Where ด้วยสถานที่ที่ชัดเจน (A) ผิด พูดถึงเวลาออกเดินทาง (C) ผิด ไม่ตอบคำถาม Where'
+      }
+    ]
+  },
+  // ── PART 3 CONVERSATIONS ──
+  {
+    id:'p3_2025_1', part:3, year:2025, title:'Job Interview Discussion',
+    desc:'บทสนทนาสัมภาษณ์งาน — ฟังแล้วตอบ 3 คำถาม',
+    timeLimit:90, xp:30,
+    transcript:`M: Good morning. Thanks for coming in today. I've reviewed your resume and I'm impressed with your background in data analysis.
+W: Thank you. I've been working in the field for about five years now, mostly with financial data.
+M: That's exactly what we need. Our team handles a lot of quarterly reports and we're looking for someone who can also help streamline our reporting process.
+W: I actually developed an automated dashboard at my previous company that reduced reporting time by 40 percent.
+M: That sounds very promising. When would you be available to start if we made you an offer?
+W: I'd need to give two weeks' notice at my current position, so I could start around the 15th of next month.`,
+    questions:[
+      {
+        id:1, type:'conv',
+        text:'What is the man most likely doing?',
+        options:['Reviewing quarterly reports','Conducting a job interview','Giving a team presentation','Training a new employee'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ชายกำลังสัมภาษณ์ผู้หญิง สังเกตจาก "Thanks for coming in" และการถามเรื่อง resume'
+      },
+      {
+        id:2, type:'conv',
+        text:'What did the woman accomplish at her previous company?',
+        options:['She hired new analysts','She created an automated dashboard','She managed the finance team','She reduced staff by 40 percent'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — เธอพัฒนา automated dashboard ที่ลดเวลารายงาน 40%'
+      },
+      {
+        id:3, type:'conv',
+        text:'When can the woman start working?',
+        options:['Immediately','In one week','Around the 15th of next month','At the start of next quarter'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — เธอต้องแจ้ง 2 อาทิตย์ล่วงหน้าที่ที่ทำงานเดิม จึงเริ่มได้ราววันที่ 15 เดือนหน้า'
+      }
+    ]
+  },
+  {
+    id:'p3_2024_1', part:3, year:2024, title:'Hotel Check-in Problem',
+    desc:'บทสนทนาปัญหาเช็กอินโรงแรม',
+    timeLimit:90, xp:30,
+    transcript:`W: Good evening. I have a reservation under Kim, K-I-M.
+M: Let me pull that up... I see a reservation for one night in a standard room. However, I'm afraid we've had an issue with that room due to maintenance.
+W: Oh, that's a problem. I have an early meeting tomorrow and really need to get some rest tonight.
+M: I completely understand. We'd like to upgrade you to one of our deluxe suites at no additional charge as an apology for the inconvenience.
+W: That's very kind of you. Does it have a good work desk? I'll need to prepare some documents tonight.
+M: Absolutely. The suite includes a fully equipped work station with high-speed internet.`,
+    questions:[
+      {
+        id:1, type:'conv',
+        text:'What problem does the hotel have?',
+        options:["The woman's reservation was lost",'A room is unavailable due to maintenance','The hotel is fully booked','The internet is not working'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — มีปัญหากับห้องเนื่องจาก maintenance สังเกตจาก "issue with that room due to maintenance"'
+      },
+      {
+        id:2, type:'conv',
+        text:'What does the hotel offer the woman?',
+        options:['A full refund','A free breakfast','An upgrade to a deluxe suite','A discount on her next visit'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — โรงแรมอัพเกรดให้เป็น deluxe suite โดยไม่คิดค่าใช้จ่ายเพิ่ม'
+      },
+      {
+        id:3, type:'conv',
+        text:"What does the woman need to do tonight?",
+        options:['Attend a dinner event','Prepare documents for a meeting','Make a phone call to her office','Order room service'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — เธอต้องเตรียมเอกสารคืนนี้สำหรับการประชุมเช้าวันรุ่งขึ้น'
+      }
+    ]
+  },
+  {
+    id:'p3_2023_1', part:3, year:2023, title:'Product Return & Complaint',
+    desc:'บทสนทนาการคืนสินค้าและร้องเรียน',
+    timeLimit:90, xp:30,
+    transcript:`M: Hi, I bought this laptop here three weeks ago and the screen has started flickering. I'd like to return it.
+W: I'm sorry to hear that. Do you have your receipt or proof of purchase?
+M: Yes, I have it right here. I also registered it online when I bought it.
+W: Perfect. Since it's within our 30-day return period, you're eligible for either a full refund or an exchange for the same model.
+M: I'd prefer an exchange since I really need the laptop for work. But can you check if you have the upgraded version in stock? I'd be willing to pay the price difference.
+W: Let me check our inventory system. Yes, we have two units of the 16GB version. The price difference is 150 dollars.`,
+    questions:[
+      {
+        id:1, type:'conv',
+        text:'Why is the man at the store?',
+        options:['To buy a new laptop','To get a repair estimate','To return a defective product','To ask about a warranty'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ชายมาคืนสินค้าที่มีปัญหา (หน้าจอกะพริบ) สังเกตจาก "I\'d like to return it"'
+      },
+      {
+        id:2, type:'conv',
+        text:'What does the woman say the man is eligible for?',
+        options:['Free repairs within a year','Either a refund or exchange within 30 days','Store credit for future purchases','A manufacturer warranty claim'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — เธอบอกว่าอยู่ในช่วง 30 วัน จึงเลือกได้ระหว่าง refund หรือ exchange'
+      },
+      {
+        id:3, type:'conv',
+        text:'What does the man decide to do?',
+        options:['Get a full refund','Exchange for the same model','Upgrade to a better model by paying extra','Leave and come back later'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ชายต้องการ exchange เป็นรุ่นที่ดีกว่า (16GB) โดยยินดีจ่ายส่วนต่าง $150'
+      }
+    ]
+  },
+  {
+    id:'p3_2022_1', part:3, year:2022, title:'Office Renovation Planning',
+    desc:'บทสนทนาวางแผนปรับปรุงออฟฟิศ',
+    timeLimit:90, xp:30,
+    transcript:`W1: The contractor called this morning. He said the renovation of the third floor will take at least six weeks.
+W2: Six weeks? That's longer than we expected. Where will the accounting team work during that time?
+W1: Management is considering moving them temporarily to the conference rooms on the second floor. But we'd need to clear out some of the storage there first.
+W2: That makes sense. Should I coordinate with building services to arrange that?
+W1: Yes, please. Also, can you send an email to the accounting team today so they can start planning?
+W2: Of course. I'll take care of both this afternoon.`,
+    questions:[
+      {
+        id:1, type:'conv',
+        text:'What are the speakers mainly discussing?',
+        options:['A new office building purchase','Temporary arrangements during a renovation','Hiring a new accounting team','A conference room scheduling issue'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — บทสนทนาหลักพูดถึงการจัดการชั่วคราวระหว่างการปรับปรุงชั้น 3'
+      },
+      {
+        id:2, type:'conv',
+        text:'Where will the accounting team likely work during the renovation?',
+        options:['At a nearby coworking space','On the first floor','In the second floor conference rooms','At home remotely'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — จะย้ายทีมบัญชีไปที่ห้องประชุมชั้น 2 ชั่วคราว'
+      },
+      {
+        id:3, type:'conv',
+        text:'What will the second speaker do this afternoon?',
+        options:['Call the contractor','Meet with the accounting manager','Coordinate with building services and send an email','Inspect the third floor'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — เธอจะติดต่อ building services และส่งอีเมลให้ทีมบัญชีในช่วงบ่าย'
+      }
+    ]
+  },
+  // ── PART 4 SHORT TALKS ──
+  {
+    id:'p4_2025_1', part:4, year:2025, title:'Company Announcement',
+    desc:'ประกาศจากบริษัท — ฟังแล้วตอบ 3 คำถาม',
+    timeLimit:90, xp:35,
+    transcript:`Good morning, everyone. This is a message from the HR department. As we approach the end of our fiscal year, we'd like to remind all employees that the deadline for submitting your performance self-assessments is this Friday, April 25th. These assessments are a critical part of our annual review process and directly influence salary adjustments and promotions. If you have not yet completed your assessment, please log into the HR portal and access the form under the "Performance" tab. If you experience any technical issues accessing the portal, please contact IT support at extension 4400. We appreciate your cooperation and look forward to recognizing your achievements this year.`,
+    questions:[
+      {
+        id:1, type:'talk',
+        text:'Who is most likely making this announcement?',
+        options:['The company CEO','An HR department representative','An IT support technician','A department manager'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ประกาศระบุชัดเจน "This is a message from the HR department"'
+      },
+      {
+        id:2, type:'talk',
+        text:'What is the deadline mentioned in the announcement?',
+        options:['End of the fiscal year','April 25th','Next Monday','Last Friday'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — กำหนดส่ง performance self-assessment คือวันศุกร์ที่ 25 เมษายน'
+      },
+      {
+        id:3, type:'talk',
+        text:'What should employees do if they have technical problems with the portal?',
+        options:['Email the HR department','Visit the IT office in person','Call extension 4400','Complete a paper form instead'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ให้ติดต่อ IT support ที่ extension 4400 หากมีปัญหาเทคนิค'
+      }
+    ]
+  },
+  {
+    id:'p4_2024_1', part:4, year:2024, title:'Radio News Report',
+    desc:'รายงานข่าววิทยุ — สถานการณ์ธุรกิจ',
+    timeLimit:90, xp:35,
+    transcript:`And now for our business update. TechCore Solutions announced this morning that it will be acquiring CloudBase, a leading cloud infrastructure company, for 2.4 billion dollars. The deal, which is expected to close by the third quarter of this year, will significantly expand TechCore's data storage capabilities. Company spokesperson Janet Lee stated that the acquisition would allow TechCore to offer more competitive pricing and improved service reliability to its growing client base of over 50,000 businesses worldwide. Industry analysts note that this move positions TechCore as a major challenger to the current market leaders. Shareholders responded positively, with TechCore's stock rising 8 percent following the announcement.`,
+    questions:[
+      {
+        id:1, type:'talk',
+        text:'What has TechCore Solutions announced?',
+        options:['A new product launch','An acquisition of another company','Expansion into a new market','Layoffs due to budget cuts'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — TechCore ประกาศการซื้อกิจการ CloudBase มูลค่า 2.4 พันล้านดอลลาร์'
+      },
+      {
+        id:2, type:'talk',
+        text:'According to the report, when is the deal expected to close?',
+        options:['By the end of this month','In the first quarter','By the third quarter','Next fiscal year'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — คาดว่าดีลจะเสร็จสิ้นภายใน Q3 ของปีนี้'
+      },
+      {
+        id:3, type:'talk',
+        text:'How did shareholders react to the announcement?',
+        options:['They sold their shares immediately','They reacted negatively','Stock price rose 8 percent','No significant reaction was noted'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ผู้ถือหุ้นตอบรับดี หุ้น TechCore ขึ้น 8% หลังประกาศ'
+      }
+    ]
+  },
+  {
+    id:'p4_2023_1', part:4, year:2023, title:'Museum Audio Guide',
+    desc:'เสียงบรรยายในพิพิธภัณฑ์',
+    timeLimit:90, xp:35,
+    transcript:`Welcome to the Grand City History Museum. You are currently standing in Gallery Three, which is dedicated to the city's industrial revolution from 1850 to 1920. The artifacts in this room include original machinery used in the city's first textile factories, as well as photographs documenting the lives of workers during that era. Of particular interest is the fully restored steam engine on your right, which was in active use until 1918. Please note that photography is permitted in this gallery, but flash photography is not allowed to protect the artifacts. Our next guided tour begins at 2 PM and departs from the main lobby. Admission to the tour is included in your museum ticket. Thank you for visiting.`,
+    questions:[
+      {
+        id:1, type:'talk',
+        text:'What period of history does Gallery Three cover?',
+        options:['1800 to 1850','1850 to 1920','1900 to 1950','1920 to 1980'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — Gallery Three ครอบคลุมยุคปฏิวัติอุตสาหกรรม ค.ศ. 1850–1920'
+      },
+      {
+        id:2, type:'talk',
+        text:'What restriction is mentioned regarding photography?',
+        options:['Photography is completely banned','Only staff can take photos','Flash photography is not allowed','Tripods are prohibited'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ถ่ายภาพได้แต่ห้ามใช้แฟลชเพื่อปกป้องวัตถุโบราณ'
+      },
+      {
+        id:3, type:'talk',
+        text:'What does the speaker say about the guided tour?',
+        options:['It costs extra to join','It is already sold out','It starts at 2 PM from the main lobby','It is available only on weekends'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ทัวร์นำชมเริ่มเวลา 14.00 น. ที่ล็อบบี้หลัก รวมอยู่ในค่าตั๋วเข้าชม'
+      }
+    ]
+  },
+  {
+    id:'p4_2022_1', part:4, year:2022, title:'Store Announcement',
+    desc:'ประกาศในห้างสรรพสินค้า',
+    timeLimit:90, xp:35,
+    transcript:`Attention shoppers. Welcome to Meridian Department Store. Today is the last day of our Summer Clearance Sale, where you can find discounts of up to 70 percent on selected clothing, footwear, and accessories throughout the store. Please be aware that sale items cannot be returned or exchanged after purchase. For your convenience, we have opened two additional cashier lanes on the second floor to reduce waiting times. Our restaurant on the fourth floor will be open until 9 PM this evening, one hour later than usual, so you can enjoy a meal after your shopping. Don't forget that Meridian loyalty cardholders receive an additional 10 percent off all sale items today. For more information, please visit the customer service desk on the ground floor.`,
+    questions:[
+      {
+        id:1, type:'talk',
+        text:'What is the main purpose of this announcement?',
+        options:['To advertise a new store location','To inform about a sale ending today','To announce new store hours permanently','To recruit part-time staff'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ประกาศแจ้งว่าวันนี้เป็นวันสุดท้ายของ Summer Clearance Sale'
+      },
+      {
+        id:2, type:'talk',
+        text:'What special benefit do loyalty cardholders receive?',
+        options:['Free parking','An extra 10 percent off sale items','A free gift with purchase','Priority checkout lanes'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — ผู้ถือ Meridian loyalty card ได้ส่วนลดเพิ่มอีก 10% จากของที่ลดราคาอยู่แล้ว'
+      },
+      {
+        id:3, type:'talk',
+        text:'Until what time will the restaurant be open today?',
+        options:['7 PM','8 PM','9 PM','10 PM'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — ร้านอาหารเปิดถึง 21.00 น. วันนี้ ซึ่งเปิดนานกว่าปกติ 1 ชั่วโมง'
+      }
+    ]
+  },
+  {
+    id:'p4_2021_1', part:4, year:2021, title:'Training Session Introduction',
+    desc:'การแนะนำการฝึกอบรม',
+    timeLimit:90, xp:35,
+    transcript:`Good afternoon and welcome to our quarterly safety training session. I'm David Chen, your safety coordinator for today. Over the next two hours, we'll be covering three main topics: fire evacuation procedures, proper handling of hazardous materials, and first aid basics. Each section will include a short video, followed by a demonstration, and then a brief quiz. Please make sure your mobile phones are on silent mode during the session. At the end of the training, you'll need to complete a sign-off form, which will be kept in your employee file. Refreshments will be provided during the 15-minute break scheduled at approximately 3 PM. Let's get started with the first topic.`,
+    questions:[
+      {
+        id:1, type:'talk',
+        text:'What is the purpose of this talk?',
+        options:['To introduce a new company policy','To open a quarterly safety training','To announce emergency procedures','To evaluate employee performance'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — เป็นการเปิดการฝึกอบรมความปลอดภัยประจำไตรมาส'
+      },
+      {
+        id:2, type:'talk',
+        text:'How many main topics will be covered in the training?',
+        options:['Two','Three','Four','Five'],
+        answer:1,
+        explanation:'(B) ถูกต้อง — มี 3 หัวข้อหลัก: การอพยพหนีไฟ การจัดการสารอันตราย และปฐมพยาบาล'
+      },
+      {
+        id:3, type:'talk',
+        text:'What must employees do at the end of the training?',
+        options:['Pass a written exam','Submit a report','Complete a sign-off form','Return their ID badges'],
+        answer:2,
+        explanation:'(C) ถูกต้อง — พนักงานต้องกรอก sign-off form ซึ่งจะเก็บไว้ในแฟ้มประวัติพนักงาน'
+      }
+    ]
+  }
+];
+
+// ─── STORAGE ───
+const SK = 'eng_journey_v2';
+function ls() { try { return JSON.parse(localStorage.getItem(SK)) || {}; } catch(e) { return {}; } }
+function ss(d) { try { localStorage.setItem(SK, JSON.stringify(d)); } catch(e) {} }
+
+function getState() {
+  const d = ls();
+  return {
+    words: d.words || JSON.parse(JSON.stringify(DEFAULT_WORDS)),
+    xp: d.xp || 0,
+    readingProgress: d.readingProgress || {},
+    listeningProgress: d.listeningProgress || {},
+    speakStreak: d.speakStreak || { count: 0, days: [], lastDate: null },
+    todaySpeak: d.todaySpeak || [],
+    writingHistory: d.writingHistory || [],
+  };
+}
+function saveState(s) { ss(s); }
+let STATE = getState();
+
+// ─── XP ───
+function addXP(amount) {
+  STATE.xp = (STATE.xp || 0) + amount;
+  saveState(STATE);
+  updateXPBar();
+  showXPToast('+' + amount + ' XP');
+}
+function updateXPBar() {
+  const xp = STATE.xp || 0;
+  const level = Math.floor(xp / 100);
+  const pct = (xp % 100);
+  document.getElementById('xp-fill-bar').style.width = pct + '%';
+  document.getElementById('xp-num').textContent = xp + ' XP';
+}
+function showXPToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:70px;right:20px;background:var(--ink);color:var(--acc2);font-family:DM Mono,monospace;font-size:13px;padding:6px 14px;border-radius:6px;z-index:9999;animation:fadeUp .3s ease';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 1800);
+}
+
+// ─── NAV ───
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('on'));
+  document.getElementById('page-' + id).classList.add('on');
+  document.getElementById('nt-' + id).classList.add('on');
+  if (id === 'reading') renderReading();
+  if (id === 'speaking') renderSpeaking();
+  if (id === 'writing') renderWritingPrompts();
+  if (id === 'vocab') renderVocab();
+  if (id === 'listening') renderListening();
+}
+
+// ══════════════════ VOCAB ══════════════════
+const VCATS = ['all','verb','noun','adj','adv','phrase','idiom'];
+const VCAT_TH = {all:'ทุก',verb:'verb',noun:'noun',adj:'adj',adv:'adv',phrase:'phrase',idiom:'idiom'};
+let vMode = 'all', vCat = 'all', vAddOpen = false, vExpanded = new Set();
+let vNextId = Math.max(...(STATE.words.map(w => w.id)), 0) + 1;
+
+function setVMode(m) {
+  vMode = m;
+  ['all','star'].forEach(x => document.getElementById('vb-'+x).classList.toggle('on', x===m));
+  renderVocab();
+}
+function setVCat(c) { vCat = c; renderVCats(); renderVocab(); }
+function toggleAddForm() {
+  vAddOpen = !vAddOpen;
+  document.getElementById('add-panel').classList.toggle('open', vAddOpen);
+}
+function saveVocab() {
+  const w = document.getElementById('fw').value.trim();
+  if (!w) return;
+  const entry = {
+    id: vNextId++, word: w,
+    read: document.getElementById('fr').value.trim() || w,
+    cat: document.getElementById('fc').value,
+    def: document.getElementById('fd').value.trim() || '',
+    thai: document.getElementById('ft').value.trim() || '',
+    sentence: document.getElementById('fs').value.trim() || '',
+    synonyms: document.getElementById('fy').value.split(',').map(s=>s.trim()).filter(Boolean),
+    starred: false
+  };
+  STATE.words.unshift(entry);
+  saveState(STATE);
+  ['fw','fr','fd','ft','fs','fy'].forEach(id => document.getElementById(id).value = '');
+  toggleAddForm();
+  addXP(5);
+  renderVocab();
+}
+function toggleVCard(id) {
+  vExpanded.has(id) ? vExpanded.delete(id) : vExpanded.add(id);
+  const card = document.getElementById('vc'+id);
+  const exp = document.getElementById('vx'+id);
+  const hint = document.getElementById('vh'+id);
+  if (!card) return;
+  const open = vExpanded.has(id);
+  card.classList.toggle('open', open);
+  if (exp) exp.classList.toggle('open', open);
+  if (hint) hint.textContent = open ? '▴ ซ่อน' : '▾ ดูรายละเอียด';
+}
+function toggleVStar(id, e) {
+  e.stopPropagation();
+  const w = STATE.words.find(x => x.id === id);
+  if (w) { w.starred = !w.starred; saveState(STATE); renderVocab(); }
+}
+function deleteVocab(id, e) {
+  e.stopPropagation();
+  if (!confirm('ลบคำนี้?')) return;
+  STATE.words = STATE.words.filter(w => w.id !== id);
+  saveState(STATE);
+  renderVocab();
+}
+function renderVCats() {
+  document.getElementById('v-cats').innerHTML = VCATS.map(c =>
+    `<button class="cpill ${vCat===c?'on':''}" onclick="setVCat('${c}')">${VCAT_TH[c]}</button>`
+  ).join('');
+}
+function renderVocab() {
+  const q = (document.getElementById('vq')?.value || '').toLowerCase();
+  const list = STATE.words.filter(w => {
+    if (vMode === 'star' && !w.starred) return false;
+    if (vCat !== 'all' && w.cat !== vCat) return false;
+    if (q) {
+      const hay = (w.word + w.thai + w.def + (w.synonyms||[]).join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  document.getElementById('v-count').textContent = `แสดง ${list.length} จาก ${STATE.words.length} คำ`;
+  const g = document.getElementById('vgrid');
+  if (!list.length) { g.innerHTML = '<div class="empty-state"><h3>ไม่พบคำศัพท์</h3></div>'; return; }
+  g.innerHTML = list.map(w => {
+    const open = vExpanded.has(w.id);
+    return `<div class="vcard ${open?'open':''}" id="vc${w.id}" data-cat="${w.cat}" onclick="toggleVCard(${w.id})">
+      <div class="vc-top">
+        <div><div class="vc-word">${w.word}</div><div class="vc-read">${w.read}</div></div>
+        <div class="vc-badges">
+          <span class="cbadge cb-${w.cat}">${w.cat}</span>
+          <button class="star-btn ${w.starred?'on':''}" onclick="toggleVStar(${w.id},event)">${w.starred?'★':'☆'}</button>
+          <button class="del-btn" onclick="deleteVocab(${w.id},event)">✕</button>
+        </div>
+      </div>
+      <div class="vc-def">${w.def}</div>
+      <div class="vc-thai">${w.thai}</div>
+      <div class="vc-exp ${open?'open':''}" id="vx${w.id}">
+        ${w.sentence?`<div class="exp-label">ประโยคตัวอย่าง</div><div class="vc-sent">"${w.sentence}"</div>`:''}
+        ${(w.synonyms||[]).length?`<div class="exp-label">Synonyms</div><div class="syn-row">${w.synonyms.map(s=>`<span class="syn-tag">${s}</span>`).join('')}</div>`:''}
+      </div>
+      <div class="vc-hint" id="vh${w.id}">${open?'▴ ซ่อน':'▾ ดูรายละเอียด'}</div>
+    </div>`;
+  }).join('');
+}
+
+
+let currentLevel = null, answers = {}, translateAnswers = {}, quizDone = false;
+
+function isLevelUnlocked(levelId) {
+  const idx = LEVELS.findIndex(l => l.id === levelId);
+  if (idx === 0) return true;
+  const prev = LEVELS[idx - 1];
+  return (STATE.readingProgress[prev.id]?.passed) === true;
+}
+
+function renderReading() {
+  const track = document.getElementById('quest-track');
+  track.innerHTML = LEVELS.map((lv, i) => {
+    const prog = STATE.readingProgress[lv.id] || {};
+    const unlocked = isLevelUnlocked(lv.id);
+    const done = prog.passed;
+    const active = currentLevel?.id === lv.id;
+    const stars = done ? '★★★' : (prog.attempts > 0 ? '★☆☆' : '☆☆☆');
+    return `<div class="qlevel ${done?'done':''} ${active?'active':''} ${!unlocked?'locked':''}" onclick="${unlocked?`startLevel('${lv.id}')`:''}" style="${done?'--lc:'+lv.color:''}">
+      ${!unlocked ? '<div class="ql-lock">🔒</div>' : ''}
+      <div class="ql-name">${lv.name}</div>
+      <div class="ql-title" style="color:${done?lv.color:'inherit'}">${lv.title}</div>
+      <div class="ql-stars">${stars}</div>
+      <div class="progress-mini"><div class="progress-mini-fill" style="width:${done?100:0}%"></div></div>
+    </div>`;
+  }).join('');
+
+  if (!currentLevel) {
+    const firstUnlocked = LEVELS.find(lv => isLevelUnlocked(lv.id) && !STATE.readingProgress[lv.id]?.passed) || LEVELS[0];
+    document.getElementById('reading-content').innerHTML = `<div class="card" style="text-align:center;padding:2rem">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:.5rem">เลือกระดับเพื่อเริ่ม</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:1rem">ต้องผ่านแต่ละระดับ (70%+) เพื่อปลดล็อกระดับถัดไป</div>
+      <button class="btn-xs pri" onclick="startLevel('${firstUnlocked.id}')">เริ่ม ${firstUnlocked.name} — ${firstUnlocked.title}</button>
+    </div>`;
+  }
+}
+
+function startLevel(lvId) {
+  currentLevel = LEVELS.find(l => l.id === lvId);
+  if (!currentLevel || !isLevelUnlocked(lvId)) return;
+  answers = {}; translateAnswers = {}; quizDone = false;
+  const art = ARTICLES[lvId];
+  const prog = STATE.readingProgress[lvId] || {};
+
+  let qHtml = art.questions.map((q, i) => {
+    if (q.type === 'mc') {
+      return `<div class="q-item">
+        <div class="q-text">${i+1}. ${q.q}</div>
+        <div class="q-opts">${q.opts.map((o, j) =>
+          `<button class="q-opt" id="qo_${i}_${j}" onclick="answerMC(${i},${j},${q.ans})">${o}</button>`
+        ).join('')}</div>
+      </div>`;
+    } else {
+      return `<div class="q-item">
+        <div class="q-text">${i+1}. ${q.q}</div>
+        <div class="q-translate">
+          <textarea id="qt_${i}" placeholder="พิมพ์คำตอบที่นี่..." rows="2"></textarea>
+          <button class="q-btn" onclick="checkTranslate(${i})">ตรวจ</button>
+          <div class="q-feedback" id="qf_${i}"></div>
+        </div>
+      </div>`;
+    }
+  }).join('');
+
+  document.getElementById('reading-content').innerHTML = `
+    <div class="reading-card">
+      <div class="rc-header">
+        <div>
+          <div class="rc-level-badge">${currentLevel.name} — ${currentLevel.title}</div>
+          <div class="rc-title">${art.title}</div>
+          <div class="rc-xp">+${currentLevel.xpReward} XP เมื่อผ่าน</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:rgba(250,248,244,.5);font-family:'DM Mono',monospace">ผ่านแล้ว ${prog.passed?'✓':''}</div>
+          ${prog.passed ? `<div style="font-size:12px;color:var(--acc2);margin-top:4px">คะแนนสูงสุด: ${prog.bestScore}%</div>` : ''}
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-article">${art.text}</div>
+        <div class="q-section">
+          <h4>แบบทดสอบความเข้าใจ</h4>
+          <div id="quiz-wrap">${qHtml}</div>
+          <div style="margin-top:1.25rem;display:flex;gap:8px;align-items:center">
+            <button class="btn-xs pri" id="submit-quiz" onclick="submitQuiz()">ส่งคำตอบ</button>
+            <span style="font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace">ตอบทุกข้อก่อนส่ง</span>
+          </div>
+          <div class="result-panel" id="result-panel"></div>
+        </div>
+      </div>
+    </div>`;
+  renderReading();
+}
+
+function answerMC(qIdx, optIdx, correct) {
+  if (quizDone) return;
+  answers[qIdx] = optIdx;
+  const q = ARTICLES[currentLevel.id].questions[qIdx];
+  for (let j = 0; j < q.opts.length; j++) {
+    const el = document.getElementById(`qo_${qIdx}_${j}`);
+    if (el) { el.classList.remove('correct','wrong'); el.classList.add('done'); }
+  }
+}
+
+function checkTranslate(i) {
+  const val = document.getElementById('qt_' + i)?.value.trim();
+  if (!val) return;
+  translateAnswers[i] = val;
+  const fb = document.getElementById('qf_' + i);
+  const sample = ARTICLES[currentLevel.id].questions[i].sample;
+  fb.classList.add('show');
+  fb.className = 'q-feedback show try';
+  fb.innerHTML = `<strong>คำตอบตัวอย่าง:</strong> "${sample}"<br><span style="font-size:11px;color:var(--ink3)">เปรียบเทียบกับที่คุณเขียน — ไม่จำเป็นต้องตรงทั้งหมด</span>`;
+}
+
+function submitQuiz() {
+  if (quizDone) return;
+  const art = ARTICLES[currentLevel.id];
+  const mcQs = art.questions.filter(q => q.type === 'mc');
+  const answered = Object.keys(answers).length + Object.keys(translateAnswers).length;
+  if (answered < art.questions.length - 1) {
+    alert('กรุณาตอบคำถามให้ครบก่อนส่ง');
+    return;
+  }
+  quizDone = true;
+  let correct = 0;
+  art.questions.forEach((q, i) => {
+    if (q.type === 'mc') {
+      const chosen = answers[i];
+      for (let j = 0; j < q.opts.length; j++) {
+        const el = document.getElementById(`qo_${i}_${j}`);
+        if (!el) continue;
+        if (j === q.ans) el.classList.add('correct');
+        else if (j === chosen) el.classList.add('wrong');
+      }
+      if (chosen === q.ans) correct++;
+    } else {
+      if (translateAnswers[i]) correct += 0.5;
+    }
+  });
+  const total = art.questions.length;
+  const score = Math.round((correct / total) * 100);
+  const passed = score >= currentLevel.passScore;
+  const prog = STATE.readingProgress[currentLevel.id] || { attempts: 0, bestScore: 0, passed: false };
+  prog.attempts++;
+  if (score > prog.bestScore) prog.bestScore = score;
+  if (passed && !prog.passed) {
+    prog.passed = true;
+    addXP(currentLevel.xpReward);
+  }
+  STATE.readingProgress[currentLevel.id] = prog;
+  saveState(STATE);
+
+  const rp = document.getElementById('result-panel');
+  rp.className = 'result-panel show ' + (passed ? 'pass' : 'fail');
+  const nextLevel = LEVELS[LEVELS.findIndex(l => l.id === currentLevel.id) + 1];
+  rp.innerHTML = `
+    <div class="rp-score" style="color:${passed?'#1a5a3a':'#8a1a1a'}">${score}%</div>
+    <div class="rp-msg">${passed ? '🎉 ผ่านแล้ว! ' + (nextLevel ? 'ปลดล็อก '+nextLevel.name+' แล้ว' : 'คุณถึงระดับสูงสุดแล้ว!') : '❌ ยังไม่ผ่าน ต้องได้ '+currentLevel.passScore+'% ขึ้นไป'}</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      ${passed && nextLevel ? `<button class="rp-btn next" onclick="startLevel('${nextLevel.id}')">ไประดับถัดไป →</button>` : ''}
+      <button class="rp-btn retry" onclick="startLevel('${currentLevel.id}')">ลองอีกครั้ง</button>
+    </div>`;
+  renderReading();
+}
+let selectedPrompt = null;
+
+function renderWritingPrompts() {
+  document.getElementById('writing-prompts').innerHTML = WRITING_PROMPTS.map(p =>
+    `<div class="wp-card ${selectedPrompt?.id===p.id?'selected':''}" onclick="selectPrompt('${p.id}')">
+      <div class="wp-tag">${p.tag}</div>
+      <div class="wp-title">${p.title}</div>
+      <div class="wp-hint">${p.hint}</div>
+    </div>`
+  ).join('');
+}
+
+function selectPrompt(id) {
+  selectedPrompt = WRITING_PROMPTS.find(p => p.id === id);
+  renderWritingPrompts();
+  document.getElementById('wb-prompt-text').textContent = selectedPrompt.title + ' — ' + selectedPrompt.hint;
+  document.getElementById('writing-area').placeholder = 'เริ่มเขียนที่นี่...';
+  document.getElementById('ai-feedback').classList.remove('show');
+  document.getElementById('writing-area').focus();
+}
+
+function updateWordCount() {
+  const text = document.getElementById('writing-area').value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  document.getElementById('word-count').textContent = words + ' words';
+}
+
+function clearWriting() {
+  document.getElementById('writing-area').value = '';
+  document.getElementById('ai-feedback').classList.remove('show');
+  updateWordCount();
+}
+
+async function checkWriting() {
+  const text = document.getElementById('writing-area').value.trim();
+  if (!text || text.split(/\s+/).length < 5) { alert('กรุณาเขียนอย่างน้อย 5 คำก่อน'); return; }
+  const btn = document.getElementById('check-btn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังตรวจ...';
+  const fb = document.getElementById('ai-feedback');
+  fb.className = 'ai-feedback show loading';
+  document.getElementById('ai-feedback-body').innerHTML = '<div class="dot-loading"><span></span><span></span><span></span></div>';
+
+  const prompt = selectedPrompt ? `Topic: "${selectedPrompt.title}"` : '';
+  const systemPrompt = `You are an English teacher providing concise writing feedback. The student is a Thai learner. 
+Respond ONLY with a JSON object, no markdown:
+{
+  "overall": 1-10,
+  "grammar": 1-10,
+  "vocabulary": 1-10,
+  "summary": "2 sentences of overall feedback in Thai",
+  "corrections": [
+    {"original": "exact wrong text", "corrected": "corrected version", "explanation": "brief Thai explanation"}
+  ],
+  "suggestion": "one actionable improvement tip in Thai"
+}
+Keep corrections to max 3 most important ones. If the writing is good, corrections can be empty.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: `${prompt}\n\nStudent writing:\n${text}` }]
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || '';
+    let result;
+    try {
+      result = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    } catch(e) {
+      result = null;
+    }
+    if (result) {
+      fb.className = 'ai-feedback show result';
+      const corHtml = result.corrections?.length
+        ? `<div class="fb-corrections"><h5>จุดที่ควรแก้ไข</h5>${result.corrections.map(c =>
+            `<div class="correction-item"><strong style="color:var(--red)">${c.original}</strong> → <strong style="color:var(--teal)">${c.corrected}</strong><br><span style="color:var(--ink3);font-size:11px">${c.explanation}</span></div>`
+          ).join('')}</div>` : '';
+      document.getElementById('ai-feedback-body').innerHTML = `
+        <div class="fb-score-row">
+          <div class="fb-score"><div class="val">${result.overall}/10</div><div class="lbl">Overall</div></div>
+          <div class="fb-score"><div class="val">${result.grammar}/10</div><div class="lbl">Grammar</div></div>
+          <div class="fb-score"><div class="val">${result.vocabulary}/10</div><div class="lbl">Vocabulary</div></div>
+        </div>
+        <div class="fb-label">ความเห็นโดยรวม</div>
+        <div class="fb-text">${result.summary}</div>
+        ${corHtml}
+        ${result.suggestion ? `<div class="fb-label" style="margin-top:10px">คำแนะนำ</div><div class="fb-text" style="color:var(--blue)">${result.suggestion}</div>` : ''}
+      `;
+      addXP(10);
+    } else {
+      throw new Error('parse error');
+    }
+  } catch(e) {
+    fb.className = 'ai-feedback show error';
+    document.getElementById('ai-feedback-body').innerHTML = '<div class="fb-text">ไม่สามารถเชื่อมต่อ AI ได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง</div>';
+  }
+  btn.disabled = false;
+  btn.textContent = 'ตรวจการเขียน ✦';
+}
+
+
+let currentExercise = null, phraseIndex = 0;
+
+function renderSpeaking() {
+  const { speakStreak, todaySpeak } = STATE;
+  document.getElementById('streak-num').textContent = speakStreak.count || 0;
+  const today = new Date().toDateString();
+  const days7 = Array.from({length:7}, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6 - i));
+    const ds = d.toDateString();
+    const isToday = ds === today;
+    const done = (speakStreak.days || []).includes(ds);
+    const abbr = ['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()];
+    return `<div class="sd ${done?'done':''} ${isToday&&!done?'today':''}">${abbr}</div>`;
+  }).join('');
+  document.getElementById('streak-days').innerHTML = days7;
+  document.getElementById('daily-lessons').innerHTML = DAILY_LESSONS.map(l => {
+    const done = (todaySpeak || []).includes(l.id);
+    return `<div class="dlesson ${done?'done':''}" data-type="${l.type}" onclick="openExercise('${l.id}')">
+      <div class="dl-tag">${l.type}</div>
+      <div class="dl-title">${l.title}</div>
+      <div class="dl-desc">${l.desc}</div>
+      <div class="dl-meta">
+        <span class="dl-time">${l.time}</span>
+        ${done ? '<span class="dl-done-badge">✓ เสร็จแล้ว</span>' : '<span style="font-size:11px;color:var(--blue);font-family:DM Mono,monospace">เริ่มเลย →</span>'}
+      </div>
+    </div>`;
+  }).join('');
+  const doneCount = (STATE.todaySpeak||[]).length;
+  document.getElementById('speak-badge').style.display = doneCount > 0 ? 'inline-block' : 'none';
+  document.getElementById('speak-badge').textContent = doneCount + '/' + DAILY_LESSONS.length;
+}
+
+function openExercise(id) {
+  currentExercise = DAILY_LESSONS.find(l => l.id === id);
+  if (!currentExercise) return;
+  phraseIndex = 0;
+  renderExerciseBody();
+  document.getElementById('se-title').textContent = currentExercise.title;
+  document.getElementById('speak-exercise').classList.add('open');
+  document.getElementById('speak-exercise').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function closeExercise() {
+  document.getElementById('speak-exercise').classList.remove('open');
+  if (synth.speaking) synth.cancel();
+}
+
+function renderExerciseBody() {
+  const phrases = currentExercise.phrases;
+  const ph = phrases[phraseIndex];
+  const isLast = phraseIndex >= phrases.length - 1;
+  document.getElementById('se-body').innerHTML = `
+    <div class="se-instruction">
+      <strong>วิธีฝึก:</strong> 1) กด <em>ฟังเสียง</em> เพื่อฟัง native speaker  2) ฝึกพูดตาม 3-5 ครั้ง  3) บันทึกเสียงตัวเองเปรียบเทียบ (หากเบราว์เซอร์รองรับ)
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);margin-bottom:4px">${phraseIndex+1} / ${phrases.length}</div>
+      <div class="se-phrase">${ph.en}</div>
+      <div class="se-phonetic">${ph.ph}</div>
+      <div class="se-thai">${ph.th}</div>
+    </div>
+    <div class="speak-controls">
+      <button class="listen-btn" id="listen-btn" onclick="speakPhrase('${ph.en.replace(/'/g,"\\'")}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        ฟังเสียง
+      </button>
+      <button class="rec-btn" id="rec-btn" onclick="toggleRecord()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+        บันทึกเสียง
+      </button>
+    </div>
+    <div class="tip-box">
+      <strong>เคล็ดลับ</strong>
+      <p>${ph.tip}</p>
+    </div>
+    <div class="nav-btns">
+      ${phraseIndex > 0 ? `<button class="nav-btn" onclick="prevPhrase()">← ก่อนหน้า</button>` : ''}
+      ${!isLast ? `<button class="nav-btn pri" onclick="nextPhrase()">ถัดไป →</button>` : `<button class="nav-btn pri" onclick="finishLesson()">เสร็จแล้ว ✓</button>`}
+    </div>
+  `;
+}
+
+// Text-to-speech
+const synth = window.speechSynthesis || {};
+function speakPhrase(text) {
+  if (!synth.speak) { alert('เบราว์เซอร์ไม่รองรับ Text-to-Speech'); return; }
+  if (synth.speaking) synth.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US'; utter.rate = 0.85; utter.pitch = 1;
+  const voices = synth.getVoices().filter(v => v.lang.startsWith('en'));
+  if (voices.length) utter.voice = voices[0];
+  const btn = document.getElementById('listen-btn');
+  if (btn) { btn.classList.add('speaking'); btn.textContent = ' กำลังเล่น...'; }
+  utter.onend = () => { if (btn) { btn.classList.remove('speaking'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg> ฟังเสียง'; }};
+  synth.speak(utter);
+}
+
+// Microphone recording
+let mediaRecorder = null, isRecording = false;
+async function toggleRecord() {
+  const btn = document.getElementById('rec-btn');
+  if (isRecording) {
+    isRecording = false;
+    if (mediaRecorder) mediaRecorder.stop();
+    if (btn) { btn.classList.remove('recording'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg> บันทึกเสียง'; }
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const chunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => chunks.push(e.data);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(chunks, { type: 'audio/webm' });
+      const url = URL.createObjectURL(blob);
+      const container = document.getElementById('se-body');
+      const prev = container?.querySelector('.rec-playback');
+      if (prev) prev.remove();
+      const wrap = document.createElement('div');
+      wrap.className = 'rec-playback';
+      wrap.style.cssText = 'margin-top:12px;padding:10px 14px;background:var(--paper2);border-radius:var(--r);border:1px solid var(--paper3)';
+      wrap.innerHTML = `<div style="font-size:11px;font-family:DM Mono,monospace;color:var(--ink3);margin-bottom:6px">เสียงที่บันทึก — ฟังเปรียบเทียบกับ native speaker</div><audio controls style="width:100%;" src="${url}"></audio>`;
+      container?.querySelector('.tip-box')?.after(wrap);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    mediaRecorder.start();
+    isRecording = true;
+    if (btn) { btn.classList.add('recording'); btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg> หยุดบันทึก'; }
+  } catch(e) {
+    alert('ไม่สามารถเข้าถึงไมโครโฟนได้ กรุณาอนุญาตใน browser settings');
+  }
+}
+
+function nextPhrase() {
+  if (phraseIndex < currentExercise.phrases.length - 1) {
+    phraseIndex++;
+    renderExerciseBody();
+  }
+}
+function prevPhrase() {
+  if (phraseIndex > 0) { phraseIndex--; renderExerciseBody(); }
+}
+function finishLesson() {
+  if (!STATE.todaySpeak.includes(currentExercise.id)) {
+    STATE.todaySpeak.push(currentExercise.id);
+    const today = new Date().toDateString();
+    if (!STATE.speakStreak.days) STATE.speakStreak.days = [];
+    if (!STATE.speakStreak.days.includes(today)) {
+      STATE.speakStreak.days.push(today);
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+      const yds = yesterday.toDateString();
+      if (STATE.speakStreak.lastDate === yds) {
+        STATE.speakStreak.count = (STATE.speakStreak.count || 0) + 1;
+      } else if (STATE.speakStreak.lastDate !== today) {
+        STATE.speakStreak.count = 1;
+      }
+      STATE.speakStreak.lastDate = today;
+    }
+    saveState(STATE);
+    addXP(15);
+  }
+  closeExercise();
+  renderSpeaking();
+}
+
+// ══════════════════ LISTENING / TOEIC ══════════════════
+let ltPartFilter = 'all';
+let ltActive = null;       // current lesson
+let ltQIndex = 0;          // current question index
+let ltAnswers = {};        // {qIndex: chosenOption}
+let ltRevealed = {};       // {qIndex: true} after checking
+let ltTimerInterval = null;
+let ltSecondsLeft = 0;
+let ltPlays = 0;           // how many times audio has been played
+let ltTranscriptShown = false;
+let ltTotalTime = 0;       // elapsed seconds
+
+const PART_LABELS = {1:'Photographs',2:'Question-Response',3:'Conversations',4:'Short Talks'};
+const PART_COLORS = {1:'#1a5fa8',2:'#2a7a52',3:'#5a3fa0',4:'#c8502a'};
+
+function filterLTPart(p) {
+  ltPartFilter = p;
+  document.querySelectorAll('.lt-part-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('ltpb-' + p)?.classList.add('on');
+  renderListeningGrid();
+}
+
+function renderListening() {
+  updateLTStats();
+  renderListeningGrid();
+}
+
+function updateLTStats() {
+  const prog = STATE.listeningProgress || {};
+  const done = Object.values(prog).filter(p => p.completed).length;
+  const scores = Object.values(prog).filter(p => p.bestScore != null).map(p => p.bestScore);
+  const best = scores.length ? Math.max(...scores) : null;
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const xpTotal = Object.values(prog).reduce((sum, p) => sum + (p.xpEarned||0), 0);
+  document.getElementById('lt-total-done').textContent = done;
+  document.getElementById('lt-best-score').textContent = best != null ? best+'%' : '—';
+  document.getElementById('lt-avg-score').textContent = avg != null ? avg+'%' : '—';
+  document.getElementById('lt-xp-total').textContent = xpTotal;
+}
+
+function renderListeningGrid() {
+  const lessons = ltPartFilter === 'all'
+    ? TOEIC_LESSONS
+    : TOEIC_LESSONS.filter(l => String(l.part) === ltPartFilter);
+  const prog = STATE.listeningProgress || {};
+  const grid = document.getElementById('lt-lesson-grid');
+  grid.innerHTML = lessons.map(l => {
+    const p = prog[l.id] || {};
+    const qCount = l.questions.length;
+    return `<div class="lt-card" data-part="${l.part}" onclick="startLTLesson('${l.id}')">
+      <div class="lc-top">
+        <span class="lc-part lcp${l.part}">Part ${l.part} — ${PART_LABELS[l.part]}</span>
+        <span class="lc-year">${l.year}</span>
+      </div>
+      <div class="lc-title">${l.title}</div>
+      <div class="lc-desc">${l.desc}</div>
+      <div class="lc-meta">
+        <span class="lc-qs">⏱ ${l.timeLimit}s · ${qCount} ข้อ · +${l.xp} XP</span>
+        ${p.completed ? `<span class="lc-done">✓ ผ่านแล้ว</span>` : ''}
+        ${p.bestScore != null ? `<span class="lc-score">${p.bestScore}%</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function startLTLesson(id) {
+  ltActive = TOEIC_LESSONS.find(l => l.id === id);
+  if (!ltActive) return;
+  ltQIndex = 0; ltAnswers = {}; ltRevealed = {}; ltPlays = 0;
+  ltTranscriptShown = false; ltTotalTime = 0;
+
+  const test = document.getElementById('lt-test');
+  test.classList.add('open');
+  document.getElementById('lt-test-title').textContent = `Part ${ltActive.part}: ${ltActive.title}`;
+  document.getElementById('lt-test-meta').textContent =
+    `${ltActive.year} · ${PART_LABELS[ltActive.part]} · ${ltActive.questions.length} ข้อ`;
+  document.getElementById('lt-result').classList.remove('show');
+  test.scrollIntoView({behavior:'smooth', block:'start'});
+  renderLTQuestion();
+  startLTTimer(ltActive.timeLimit * ltActive.questions.length);
+}
+
+function closeLTTest() {
+  clearLTTimer();
+  document.getElementById('lt-test').classList.remove('open');
+  ltActive = null;
+}
+
+function startLTTimer(seconds) {
+  clearLTTimer();
+  ltSecondsLeft = seconds;
+  updateLTTimerDisplay();
+  ltTimerInterval = setInterval(() => {
+    ltSecondsLeft--;
+    ltTotalTime++;
+    updateLTTimerDisplay();
+    if (ltSecondsLeft <= 0) {
+      clearLTTimer();
+      autoSubmitLT();
+    }
+  }, 1000);
+}
+
+function clearLTTimer() {
+  if (ltTimerInterval) { clearInterval(ltTimerInterval); ltTimerInterval = null; }
+}
+
+function updateLTTimerDisplay() {
+  const el = document.getElementById('lt-timer');
+  if (!el) return;
+  const m = Math.floor(ltSecondsLeft/60);
+  const s = ltSecondsLeft % 60;
+  el.textContent = m > 0 ? `${m}:${String(s).padStart(2,'0')}` : `${ltSecondsLeft}s`;
+  el.className = 'lt-timer' + (ltSecondsLeft <= 10 ? ' danger' : ltSecondsLeft <= 30 ? ' warn' : '');
+}
+
+function autoSubmitLT() {
+  // fill unanswered as wrong
+  ltActive.questions.forEach((_, i) => { if (ltAnswers[i] == null) ltAnswers[i] = -1; });
+  showLTResults();
+}
+
+function renderLTQuestion() {
+  if (!ltActive) return;
+  const qs = ltActive.questions;
+  const q = qs[ltQIndex];
+  const total = qs.length;
+
+  document.getElementById('lt-prog-fill').style.width = ((ltQIndex / total) * 100) + '%';
+  document.getElementById('lt-prog-label').textContent = `${ltQIndex + 1} / ${total}`;
+
+  const area = document.getElementById('lt-question-area');
+  let html = '';
+
+  // Audio player
+  const audioText = q.audioText || ltActive.transcript || '';
+  const playCount = ltActive.part <= 2 ? 1 : 2; // Part 1&2 play once, 3&4 up to 2
+  html += `<div class="audio-player">
+    <button class="play-btn ${ltPlays>0?'disabled':''}" id="lt-play-btn" onclick="ltPlayAudio()" ${ltPlays>0?'disabled':''}>
+      ${ltPlays>0?'✓':'▶'}
+    </button>
+    <div class="audio-info">
+      <div class="audio-title">${ltActive.part <= 2 ? `Question ${ltQIndex+1} Audio` : `${ltActive.title} — Transcript`}</div>
+      <div class="audio-bar"><div class="audio-fill" id="lt-audio-fill" style="width:${ltPlays>0?'100':'0'}%"></div></div>
+      <button class="audio-transcript-btn" onclick="toggleLTTranscript()">${ltTranscriptShown?'ซ่อน':'แสดง'} Script</button>
+    </div>
+    <div class="audio-plays">${ltPlays > 0 ? `เล่นแล้ว ${ltPlays}x` : 'กด ▶ ฟัง'}</div>
+  </div>
+  <div class="transcript-box ${ltTranscriptShown?'show':''}" id="lt-transcript">${audioText.replace(/\n/g,'<br>')}</div>`;
+
+  // Photo (Part 1)
+  if (ltActive.part === 1 && ltActive.photo) {
+    html += `<div class="lt-photo-wrap">
+      <div class="lt-photo">${ltActive.photo}<span style="font-size:13px;color:var(--ink3);font-family:'DM Mono',monospace">${ltActive.photoLabel||''}</span></div>
+    </div>`;
+  }
+
+  // Question
+  const revealed = ltRevealed[ltQIndex];
+  const chosen = ltAnswers[ltQIndex];
+
+  if (ltActive.part === 2) {
+    html += `<div class="lt-q-wrap">
+      <div class="lt-q-num">Question ${ltQIndex+1} — เลือกคำตอบที่เหมาะสมที่สุด</div>
+      <div class="lt-q-text">"${q.questionDisplay || q.audioText}"</div>`;
+  } else if (ltActive.part >= 3) {
+    html += `<div class="lt-q-wrap">
+      <div class="lt-q-num">Question ${ltQIndex+1}</div>
+      <div class="lt-q-text">${q.text}</div>`;
+  } else {
+    html += `<div class="lt-q-wrap">
+      <div class="lt-q-num">Question ${ltQIndex+1} — เลือกประโยคที่อธิบายภาพได้ถูกต้อง</div>`;
+  }
+
+  const keys = ['A','B','C','D'];
+  html += `<div class="lt-opts">${q.options.map((opt, i) => {
+    let cls = 'lt-opt';
+    if (revealed) {
+      cls += ' locked';
+      if (i === q.answer) cls += ' correct';
+      else if (i === chosen) cls += ' wrong';
+    } else if (i === chosen) cls += ' selected';
+    return `<button class="${cls}" onclick="ltChooseAnswer(${ltQIndex},${i})">
+      <span class="lt-opt-key">${keys[i]}</span>${opt}
+    </button>`;
+  }).join('')}</div>`;
+
+  if (revealed && q.explanation) {
+    html += `<div class="lt-explanation show">💡 ${q.explanation}</div>`;
+  }
+
+  html += `</div>`;
+
+  // Nav buttons
+  const isLast = ltQIndex >= qs.length - 1;
+  html += `<div class="lt-nav-row">
+    <button class="lt-nav-btn" onclick="ltPrevQ()" ${ltQIndex===0?'disabled style="opacity:.4"':''}>← ก่อนหน้า</button>
+    <div style="display:flex;gap:8px">
+      ${!revealed ? `<button class="lt-nav-btn" onclick="ltCheckAnswer()" ${chosen==null?'disabled style="opacity:.4"':''}>ตรวจคำตอบ</button>` : ''}
+      ${isLast
+        ? `<button class="lt-nav-btn pri" onclick="showLTResults()">สรุปผล →</button>`
+        : `<button class="lt-nav-btn pri" onclick="ltNextQ()">ถัดไป →</button>`
+      }
+    </div>
+  </div>`;
+
+  area.innerHTML = html;
+}
+
+function ltPlayAudio() {
+  const q = ltActive.questions[ltQIndex];
+  const text = ltActive.part <= 2
+    ? (q.audioText || '')
+    : (ltActive.transcript || '');
+
+  if (!window.speechSynthesis) return;
+  if (ltPlays > 0 && ltActive.part <= 2) return; // Part 1&2 only once
+
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US'; utter.rate = 0.88;
+  const voices = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+  if (voices.length) utter.voice = voices[0];
+
+  const fill = document.getElementById('lt-audio-fill');
+  const btn = document.getElementById('lt-play-btn');
+  if (btn) { btn.textContent = '⏵'; btn.classList.add('playing'); }
+
+  // Animate fill bar
+  const totalMs = text.length * 60; // rough estimate
+  let elapsed = 0;
+  const fillInterval = setInterval(() => {
+    elapsed += 100;
+    const pct = Math.min((elapsed / totalMs) * 100, 98);
+    if (fill) fill.style.width = pct + '%';
+  }, 100);
+
+  utter.onend = () => {
+    clearInterval(fillInterval);
+    if (fill) fill.style.width = '100%';
+    ltPlays++;
+    if (btn) {
+      btn.textContent = '✓';
+      btn.classList.remove('playing');
+      if (ltActive.part <= 2) { btn.disabled = true; btn.classList.add('disabled'); }
+    }
+    const playsEl = document.querySelector('.audio-plays');
+    if (playsEl) playsEl.textContent = `เล่นแล้ว ${ltPlays}x`;
+  };
+  window.speechSynthesis.speak(utter);
+}
+
+function toggleLTTranscript() {
+  ltTranscriptShown = !ltTranscriptShown;
+  const box = document.getElementById('lt-transcript');
+  const btn = document.querySelector('.audio-transcript-btn');
+  if (box) box.classList.toggle('show', ltTranscriptShown);
+  if (btn) btn.textContent = (ltTranscriptShown ? 'ซ่อน' : 'แสดง') + ' Script';
+}
+
+function ltChooseAnswer(qIdx, opt) {
+  if (ltRevealed[qIdx]) return;
+  ltAnswers[qIdx] = opt;
+  renderLTQuestion();
+}
+
+function ltCheckAnswer() {
+  if (ltAnswers[ltQIndex] == null) return;
+  ltRevealed[ltQIndex] = true;
+  renderLTQuestion();
+}
+
+function ltNextQ() {
+  if (ltQIndex < ltActive.questions.length - 1) {
+    ltQIndex++;
+    ltPlays = 0; ltTranscriptShown = false;
+    renderLTQuestion();
+  }
+}
+
+function ltPrevQ() {
+  if (ltQIndex > 0) {
+    ltQIndex--;
+    ltPlays = 0; ltTranscriptShown = false;
+    renderLTQuestion();
+  }
+}
+
+function showLTResults() {
+  clearLTTimer();
+  document.getElementById('lt-question-area').innerHTML = '';
+  document.getElementById('lt-timer').textContent = '✓';
+
+  const qs = ltActive.questions;
+  let correct = 0;
+  qs.forEach((q, i) => { if (ltAnswers[i] === q.answer) correct++; });
+  const score = Math.round((correct / qs.length) * 100);
+  const passed = score >= 60;
+
+  // Save progress
+  const prev = STATE.listeningProgress[ltActive.id] || { attempts: 0, bestScore: 0, xpEarned: 0 };
+  prev.attempts = (prev.attempts || 0) + 1;
+  if (score > (prev.bestScore || 0)) prev.bestScore = score;
+  if (passed && !prev.completed) {
+    prev.completed = true;
+    const earned = ltActive.xp;
+    prev.xpEarned = (prev.xpEarned || 0) + earned;
+    STATE.listeningProgress[ltActive.id] = prev;
+    saveState(STATE);
+    addXP(earned);
+  } else {
+    STATE.listeningProgress[ltActive.id] = prev;
+    saveState(STATE);
+  }
+
+  const scoreColor = score >= 80 ? 'score-pass' : score >= 60 ? 'score-avg' : 'score-fail';
+  const msg = score >= 80 ? '🎉 ยอดเยี่ยม! คุณเก่งมากๆ' : score >= 60 ? '👍 ผ่านแล้ว! ฝึกต่อไปนะ' : '💪 ยังไม่ผ่าน ลองอีกครั้ง';
+
+  // Breakdown per question
+  const breakdown = qs.map((q, i) => {
+    const ok = ltAnswers[i] === q.answer;
+    const keys = ['A','B','C','D'];
+    return `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;font-size:12px;padding:7px 10px;background:${ok?'#d5ede1':'#fce8e8'};border-radius:var(--r)">
+      <span style="font-size:14px;flex-shrink:0">${ok?'✓':'✗'}</span>
+      <div>
+        <span style="font-weight:500;color:${ok?'var(--teal)':'var(--red)'}">Q${i+1}</span>
+        ${ltAnswers[i] != null ? `— เลือก <strong>${keys[ltAnswers[i]]||'?'}</strong>` : '— ไม่ได้ตอบ'} · คำตอบที่ถูก <strong>${keys[q.answer]}</strong>
+        <div style="color:var(--ink3);margin-top:2px">${q.explanation||''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const timeTaken = Math.floor(ltTotalTime);
+  const mm = Math.floor(timeTaken/60), ss = timeTaken%60;
+
+  const rp = document.getElementById('lt-result');
+  rp.innerHTML = `
+    <div class="lt-result-score ${scoreColor}">${score}%</div>
+    <div class="lt-result-label">${correct}/${qs.length} ข้อถูก · เวลาที่ใช้ ${mm>0?mm+'m ':''}${ss}s</div>
+    <div style="font-size:15px;font-family:'Playfair Display',serif;margin-bottom:1.25rem">${msg}</div>
+    <div class="lt-result-bars">
+      <div class="lt-result-bar"><div class="bv ${scoreColor}">${score}%</div><div class="bl">คะแนน</div></div>
+      <div class="lt-result-bar"><div class="bv" style="color:var(--blue)">${correct}/${qs.length}</div><div class="bl">ข้อถูก</div></div>
+      <div class="lt-result-bar"><div class="bv" style="color:var(--ink2)">${mm>0?mm+'m ':' '}${ss}s</div><div class="bl">เวลา</div></div>
+    </div>
+    <div style="text-align:left;margin-bottom:1.25rem">
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">รายละเอียดแต่ละข้อ</div>
+      ${breakdown}
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="lt-nav-btn pri" onclick="startLTLesson('${ltActive.id}')">ทำซ้ำ</button>
+      <button class="lt-nav-btn" onclick="closeLTTest();renderListening()">กลับหน้าหลัก</button>
+    </div>`;
+  rp.classList.add('show');
+  updateLTStats();
+  renderListeningGrid();
+}
+
+// ─── INIT ───
+updateXPBar();
+renderVCats();
+renderVocab();
+
+// Pre-load TTS voices (needed for both speaking and listening modules)
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices(); // trigger initial load
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+}
+
+// Keyboard shortcut: Escape closes any open test
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeExercise();
+    closeLTTest();
+  }
+});
+</script>
+</body>
+</html>
